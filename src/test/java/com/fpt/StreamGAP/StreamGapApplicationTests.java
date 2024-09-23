@@ -1,10 +1,10 @@
-package com.example.streaminggap;
+package com.fpt.StreamGAP;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class StreamingGapApplicationTests {
+class StreamGapApplicationTests {
 
 	@Test
 	void contextLoads() {

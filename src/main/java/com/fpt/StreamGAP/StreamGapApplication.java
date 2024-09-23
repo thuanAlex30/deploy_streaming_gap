@@ -1,13 +1,13 @@
-package com.example.streaminggap;
+package com.fpt.StreamGAP;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StreamingGapApplication {
+public class StreamGapApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StreamingGapApplication.class, args);
+		SpringApplication.run(StreamGapApplication.class, args);
 	}
 
 }

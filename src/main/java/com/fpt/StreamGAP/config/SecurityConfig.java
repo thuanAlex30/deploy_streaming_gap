@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -28,12 +29,11 @@ public class SecurityConfig {
     private JWTAuthFilter jwtAuthFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request ->
                         request
-
                                 .requestMatchers("/auth/**", "/public/**").permitAll()
 
 
@@ -44,10 +44,30 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/songs/**").hasAuthority("ADMIN")
 
 
+                                .requestMatchers("/account-settings/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/account-settings/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/account-settings/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/account-settings/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/account-settings/**").hasAuthority("ADMIN")
+
+
+                                .requestMatchers("/albums/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/albums/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/albums/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/albums/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/albums/**").hasAuthority("ADMIN")
+
+
+                                .requestMatchers("/artists/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/artists/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/artists/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/artists/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/artists/**").hasAuthority("ADMIN")
+
+
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers("/user/**").hasAuthority("USER")
                                 .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN", "USER")
-
 
                                 .anyRequest().authenticated()
                 )
@@ -58,7 +78,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(UserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -66,12 +86,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

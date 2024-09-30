@@ -44,7 +44,7 @@ public class UserManagementService {
             User userResult = userRepo.save(user);
             if (userResult.getUser_id() > 0) {
                 resp.setUser((userResult));
-                resp.setMassage("User Saved Succesfully");
+                resp.setMessage("User Saved Succesfully");
                 resp.setStatusCode(200);
             }
         } catch (Exception e) {
@@ -65,10 +65,10 @@ public class UserManagementService {
             response.setRole(user.getRole());
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
-            response.setMassage("Successfully Logged In");
+            response.setMessage("Successfully Logged In");
         }catch (Exception e){
             response.setStatusCode(500);
-            response.setMassage(e.getMessage());
+            response.setMessage(e.getMessage());
         }
         return response;
     }
@@ -83,13 +83,13 @@ public class UserManagementService {
                 response.setToken(jwt);
                 response.setRefreshToken(refreshTokenReqiest.getToken());
                 response.setExpirationTime("24Hr");
-                response.setMassage("Successfully Refresh Token");
+                response.setMessage("Successfully Refresh Token");
             }
             response.setStatusCode(200);
             return response;
         }catch (Exception e){
             response.setStatusCode(500);
-            response.setMassage(e.getMessage());
+            response.setMessage(e.getMessage());
             return response;
         }
     }
@@ -100,15 +100,15 @@ public class UserManagementService {
             if(!result.isEmpty()){
                 reqRes.setUserList(result);
                 reqRes.setStatusCode(200);
-                reqRes.setMassage("Successfull");
+                reqRes.setMessage("Successfull");
             }else{
                 reqRes.setStatusCode(404);
-                reqRes.setMassage("No user Found");
+                reqRes.setMessage("No user Found");
             }
             return reqRes;
         }catch (Exception e){
             reqRes.setStatusCode(500);
-            reqRes.setMassage("Error occurred: " +e.getMessage());
+            reqRes.setMessage("Error occurred: " +e.getMessage());
             return reqRes;
         }
     }
@@ -118,10 +118,10 @@ public class UserManagementService {
             User userbyID= userRepo.findById(id).orElseThrow(()->new RuntimeException("User Not Found"));
             reqRes.setUser(userbyID);
             reqRes.setStatusCode(200);
-            reqRes.setMassage("Users with id '" + id + "' found successfully");
+            reqRes.setMessage("Users with id '" + id + "' found successfully");
         }catch (Exception e){
             reqRes.setStatusCode(500);
-            reqRes.setMassage("Error occurred: " + e.getMessage());
+            reqRes.setMessage("Error occurred: " + e.getMessage());
         }
         return reqRes;
     }
@@ -132,14 +132,14 @@ public class UserManagementService {
             if (userOptional.isPresent()) {
                 userRepo.deleteById(userId);
                 reqRes.setStatusCode(200);
-                reqRes.setMassage("User deleted successfully");
+                reqRes.setMessage("User deleted successfully");
             } else {
                 reqRes.setStatusCode(404);
-                reqRes.setMassage("User not found for deletion");
+                reqRes.setMessage("User not found for deletion");
             }
         } catch (Exception e) {
             reqRes.setStatusCode(500);
-            reqRes.setMassage("Error occurred while deleting user: " + e.getMessage());
+            reqRes.setMessage("Error occurred while deleting user: " + e.getMessage());
         }
         return reqRes;
     }
@@ -161,14 +161,14 @@ public class UserManagementService {
                 User savedUser = userRepo.save(existingUser);
                 reqRes.setUser(savedUser);
                 reqRes.setStatusCode(200);
-                reqRes.setMassage("User updated successfully");
+                reqRes.setMessage("User updated successfully");
             } else {
                 reqRes.setStatusCode(404);
-                reqRes.setMassage("User not found for update");
+                reqRes.setMessage("User not found for update");
             }
         } catch (Exception e) {
             reqRes.setStatusCode(500);
-            reqRes.setMassage("Error occurred while updating user: " + e.getMessage());
+            reqRes.setMessage("Error occurred while updating user: " + e.getMessage());
         }
         return reqRes;
     }
@@ -179,15 +179,15 @@ public class UserManagementService {
             if (userOptional.isPresent()) {
                 reqRes.setUser(userOptional.get());
                 reqRes.setStatusCode(200);
-                reqRes.setMassage("successful");
+                reqRes.setMessage("successful");
             } else {
                 reqRes.setStatusCode(404);
-                reqRes.setMassage("User not found for update");
+                reqRes.setMessage("User not found for update");
             }
 
         }catch (Exception e){
             reqRes.setStatusCode(500);
-            reqRes.setMassage("Error occurred while getting user info: " + e.getMessage());
+            reqRes.setMessage("Error occurred while getting user info: " + e.getMessage());
         }
         return reqRes;
 

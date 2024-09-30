@@ -2,8 +2,10 @@ package com.fpt.StreamGAP.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fpt.StreamGAP.entity.Song;
 import com.fpt.StreamGAP.entity.User;
 import lombok.Data;
+import lombok.Getter;
 
 import java.sql.Date;
 import java.util.List;
@@ -15,7 +17,7 @@ public class ReqRes {
 
     private int statusCode;
     private String error;
-    private String massage;
+    private String message; // Đã sửa thành "message"
     private String token;
     private String refreshToken;
     private String expirationTime;
@@ -31,5 +33,12 @@ public class ReqRes {
     private String password;
     private User user;
     private List<User> userList;
+    private List<Song> songList;
+    private Integer albumId;
+    @Getter
+    private Song song;
 
+    public void setSong(Song song) {
+        this.song = song;
+    }
 }

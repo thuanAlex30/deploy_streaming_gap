@@ -32,14 +32,22 @@ public class ArtistService {
     }
 
     public Artist updateArtist(Integer id, Artist artistDetails) {
+        // Kiểm tra xem nghệ sĩ có tồn tại hay không
         Artist artist = artistRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Không tìm thấy nghệ sĩ với ID: " + id));
 
-        artist.setName(artistDetails.getName());
-        artist.setBio(artistDetails.getBio());
-        artist.setProfile_image_url(artistDetails.getProfile_image_url());
-        // Thêm các trường khác nếu cần
+        if (artistDetails.getName() != null) {
+            artist.setName(artistDetails.getName());
+        }
+        if (artistDetails.getBio() != null) {
+            artist.setBio(artistDetails.getBio());
+        }
+        if (artistDetails.getProfile_image_url() != null) {
+            artist.setProfile_image_url(artistDetails.getProfile_image_url());
+        }
+        // Thêm các thuộc tính khác nếu cần...
 
+        // Lưu lại nghệ sĩ đã cập nhật
         return artistRepository.save(artist);
     }
 

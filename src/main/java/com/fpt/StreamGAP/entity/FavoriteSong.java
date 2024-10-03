@@ -13,12 +13,14 @@ public class FavoriteSong {
     private FavoriteSongId id;
 
     @ManyToOne
-    @MapsId("user_id")
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @MapsId("song_id")
+    @MapsId("songId")
+    @JoinColumn(name = "song_id")
     private Song song;
 
-    private Date marked_at;
+    private Date markedAt;
 }

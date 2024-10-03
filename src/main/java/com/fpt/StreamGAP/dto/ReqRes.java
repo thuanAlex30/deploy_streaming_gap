@@ -36,10 +36,29 @@ public class ReqRes {
     private List<Song> songList;
     private Integer albumId;
     private List<AccountSettingsDTO> accountSettingsList;
+    private List<FavoriteSongDTO.PlaylistSongDTO> playlistSongList;
+    private List<PartySongDTO> partySongList;
+    private List<PartyModeDTO> partyModeList;
+    private List<MusicGameDTO> musicGameList;
+    private List<KaraokeSessionDTO> karaokeSessionList;
+    private List<FavoriteSongDTO> favoriteSongList;
+    private List<AlbumsDTO> albumList;
     @Getter
     private Song song;
 
+
+
+    public void setPlaylistSongList(List<FavoriteSongDTO.PlaylistSongDTO> playlistSongList) {
+        this.playlistSongList = playlistSongList;
+    }
     public void setSong(Song song) {
         this.song = song;
+    }
+
+    public void setKaraokeSessionList(List<KaraokeSessionDTO> karaokeSessionList) {
+        this.karaokeSessionList = karaokeSessionList;
+    }
+    public void setFavoriteSongList(List<FavoriteSongDTO> favoriteSongList) {
+        this.favoriteSongList = favoriteSongList;
     }
 }

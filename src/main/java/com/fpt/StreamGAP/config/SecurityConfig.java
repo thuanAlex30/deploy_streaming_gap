@@ -63,6 +63,49 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/artists/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/artists/**").hasAuthority("ADMIN")
 
+                                .requestMatchers("/playlists/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/playlists/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/playlists/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/playlists/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/playlists/**").hasAuthority("ADMIN")
+
+
+                                .requestMatchers("/playlistsongs/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/playlistsongs/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/playlistsongs/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/playlistsongs/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/playlistsongs/**").hasAuthority("ADMIN")
+
+                                .requestMatchers("/partysongs/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/partysongs/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/partysongs/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/partysongs/**").hasAuthority("ADMIN")
+
+                                .requestMatchers("/partysongs/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/partysongs/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/partysongs/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/partysongs/**").hasAuthority("ADMIN")
+
+                                .requestMatchers("/musicgames/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/musicgames/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/musicgames/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/musicgames/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/musicgames/**").hasAuthority("ADMIN")
+
+                                .requestMatchers("/karaoke-sessions/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/karaoke-sessions/**").hasAuthority("USER")
+                                .requestMatchers(HttpMethod.GET, "/karaoke-sessions/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/karaoke-sessions/**").hasAuthority("USER")
+                                .requestMatchers(HttpMethod.DELETE, "/karaoke-sessions/**").hasAuthority("ADMIN")
+
+                                .requestMatchers("/favorite-songs/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/favorite-songs/**").hasAuthority("USER")
+                                .requestMatchers(HttpMethod.GET, "/favorite-songs/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.DELETE, "/favorite-songs/**").hasAuthority("ADMIN")
+
+                                .requestMatchers("/comments/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.DELETE, "/comments/**").hasAuthority("ADMIN")
+
 
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers("/user/**").hasAuthority("USER")

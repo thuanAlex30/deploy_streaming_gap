@@ -34,8 +34,14 @@ public class ArtistController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Artist> updateArtist(@PathVariable Integer id, @RequestBody Artist artistDetails) {
-        Artist updatedArtist = artistService.updateArtist(id, artistDetails);
-        return ResponseEntity.ok(updatedArtist);
+        try {
+            // Gọi hàm updateArtist trong service để thực hiện cập nhật
+            Artist updatedArtist = artistService.updateArtist(id, artistDetails);
+            return ResponseEntity.ok(updatedArtist);
+        } catch (RuntimeException e) {
+            // Nếu không tìm thấy nghệ sĩ hoặc có lỗi khác, trả về Not Found
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

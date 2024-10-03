@@ -27,4 +27,23 @@ public class ArtistService {
         }
     }
 
+    public Artist saveArtist(Artist artist) {
+        return artistRepository.save(artist);
+    }
+
+    public Artist updateArtist(Integer id, Artist artistDetails) {
+        Artist artist = artistRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Không tìm thấy nghệ sĩ với ID: " + id));
+
+        artist.setName(artistDetails.getName());
+        artist.setBio(artistDetails.getBio());
+        artist.setProfile_image_url(artistDetails.getProfile_image_url());
+        // Thêm các trường khác nếu cần
+
+        return artistRepository.save(artist);
+    }
+
+    public void deleteArtist(Integer id) {
+        artistRepository.deleteById(id);
+    }
 }

@@ -26,4 +26,27 @@ public class ArtistController {
         return ResponseEntity.ok(artistService.getArtistById(id));
     }
 
+    @PostMapping
+    public ResponseEntity<Artist> createArtist(@RequestBody Artist artist) {
+        Artist newArtist = artistService.saveArtist(artist);
+        return ResponseEntity.ok(newArtist);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Artist> updateArtist(@PathVariable Integer id, @RequestBody Artist artistDetails) {
+        try {
+            // Gọi hàm updateArtist trong service để thực hiện cập nhật
+            Artist updatedArtist = artistService.updateArtist(id, artistDetails);
+            return ResponseEntity.ok(updatedArtist);
+        } catch (RuntimeException e) {
+            // Nếu không tìm thấy nghệ sĩ hoặc có lỗi khác, trả về Not Found
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteArtist(@PathVariable Integer id) {
+        artistService.deleteArtist(id);
+        return ResponseEntity.noContent().build();
+    }
 }

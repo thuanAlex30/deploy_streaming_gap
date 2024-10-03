@@ -18,12 +18,24 @@ public class AccountSettingsService {
         return accountSettingsRepository.findAll();
     }
 
-    public AccountSettings getAccountSettingsById(Integer id) {
-        Optional<AccountSettings> accountSettings = accountSettingsRepository.findById(id);
-        if (accountSettings.isPresent()) {
-            return accountSettings.get();
-        } else {
-            throw new RuntimeException("Không tìm thấy cài đặt tài khoản với ID: " + id);
-        }
+    public AccountSettings getAccountSettingsById(Integer user_id) {
+        return accountSettingsRepository.findById(user_id)
+                .orElseThrow(() -> new RuntimeException("AccountSettings not found for id: " + user_id));
+    }
+
+    public AccountSettings createAccountSettings(AccountSettings accountSettings) {
+        return accountSettingsRepository.save(accountSettings);
+    }
+
+    public AccountSettings updateAccountSettings(Integer user_id, AccountSettings accountSettings) {
+        AccountSettings existingAccountSettings = getAccountSettingsById(user_id);
+        existingAccountSettings.setPrivacy(accountSettings.getPrivacy());
+        existingAccountSettings.setEmail_notifications(accountSettings.getEmail_notifications());
+        existingAccountSettings.setVolume_level(accountSettings.getVolume_level());
+        existingAccountSettings.setSleep_timer(accountSettings.getSleep_timer());
+        return accountSettingsRepository.save(existingAccountSettings);
+    }
+    public void deleteAccountSettings(Integer user_id) {
+        accountSettingsRepository.deleteById(user_id);
     }
 }

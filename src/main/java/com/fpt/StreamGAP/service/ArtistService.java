@@ -27,4 +27,32 @@ public class ArtistService {
         }
     }
 
+    public Artist saveArtist(Artist artist) {
+        return artistRepository.save(artist);
+    }
+
+    public Artist updateArtist(Integer id, Artist artistDetails) {
+        // Kiểm tra xem nghệ sĩ có tồn tại hay không
+        Artist artist = artistRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Không tìm thấy nghệ sĩ với ID: " + id));
+
+        // Cập nhật các thuộc tính từ artistDetails
+        if (artistDetails.getName() != null) {
+            artist.setName(artistDetails.getName());
+        }
+        if (artistDetails.getBio() != null) {
+            artist.setBio(artistDetails.getBio());
+        }
+        if (artistDetails.getProfile_image_url() != null) {
+            artist.setProfile_image_url(artistDetails.getProfile_image_url());
+        }
+        // Thêm các thuộc tính khác nếu cần...
+
+        // Lưu lại nghệ sĩ đã cập nhật
+        return artistRepository.save(artist);
+    }
+
+    public void deleteArtist(Integer id) {
+        artistRepository.deleteById(id);
+    }
 }

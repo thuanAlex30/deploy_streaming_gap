@@ -35,6 +35,7 @@ public class ReqRes {
     private List<User> userList;
     private List<Song> songList;
     private Integer albumId;
+    private List<AccountSettingsDTO> accountSettingsList;
     @Getter
     private Song song;
 

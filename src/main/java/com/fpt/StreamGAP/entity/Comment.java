@@ -2,10 +2,10 @@ package com.fpt.StreamGAP.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Comments")
+@Table(name = "comment")
 @Data
 public class Comment {
 
@@ -14,13 +14,13 @@ public class Comment {
     private Integer comment_id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "song_id", nullable = false)
-    private Song song;
+    @JoinColumn(name = "song_id", referencedColumnName = "song_id")
+    private Song song; // Ensure this is correctly defined
 
     private String content;
-    private Date created_at;
+    private LocalDateTime createdAt; // Changed from Date to LocalDateTime
 }

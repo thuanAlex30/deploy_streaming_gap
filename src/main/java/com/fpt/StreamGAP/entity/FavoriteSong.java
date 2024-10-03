@@ -13,12 +13,14 @@ public class FavoriteSong {
     private FavoriteSongId id;
 
     @ManyToOne
-    @MapsId("user_id")
+    @MapsId("userId") // Make sure it matches the field name in FavoriteSongId
+    @JoinColumn(name = "user_id") // Ensure this matches your database schema
     private User user;
 
     @ManyToOne
-    @MapsId("song_id")
+    @MapsId("songId") // Make sure it matches the field name in FavoriteSongId
+    @JoinColumn(name = "song_id") // Ensure this matches your database schema
     private Song song;
 
-    private Date marked_at;
+    private Date markedAt; // Note: Java naming convention is camelCase
 }

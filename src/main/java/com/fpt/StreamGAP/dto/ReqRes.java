@@ -2,14 +2,12 @@ package com.fpt.StreamGAP.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fpt.StreamGAP.entity.Comment;
 import com.fpt.StreamGAP.entity.Song;
 import com.fpt.StreamGAP.entity.User;
 import lombok.Data;
 import lombok.Getter;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -37,18 +35,19 @@ public class ReqRes {
     private List<User> userList;
     private List<Song> songList;
     private Integer albumId;
-    private List<PlaylistSongDTO> playlistSongList;
+    private List<FavoriteSongDTO.PlaylistSongDTO> playlistSongList;
     private List<PartySongDTO> partySongList;
     private List<PartyModeDTO> partyModeList;
     private List<MusicGameDTO> musicGameList;
     private List<KaraokeSessionDTO> karaokeSessionList;
     private List<FavoriteSongDTO> favoriteSongList;
+    private List<AlbumsDTO> albumList;
     @Getter
     private Song song;
 
 
 
-    public void setPlaylistSongList(List<PlaylistSongDTO> playlistSongList) {
+    public void setPlaylistSongList(List<FavoriteSongDTO.PlaylistSongDTO> playlistSongList) {
         this.playlistSongList = playlistSongList;
     }
     public void setSong(Song song) {

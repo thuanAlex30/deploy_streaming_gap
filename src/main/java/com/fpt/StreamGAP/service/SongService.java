@@ -27,4 +27,32 @@ public class SongService {
         return songRepository.findAll();
     }
 
+    public Song getSongById(Integer songId) {
+        return songRepository.findById(songId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Song not found"));
+    }
+
+    public Song createSong(Song song) {
+        try {
+            return songRepository.save(song);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data integrity violation", e);
+        }
+    }
+
+    public Song updateSong(Integer songId, Song songDetails) {
+        Song existingSong = getSongById(songId);
+        existingSong.setTitle(songDetails.getTitle());
+        existingSong.setGenre(songDetails.getGenre());
+        existingSong.setDuration(songDetails.getDuration());
+        existingSong.setAudio_file_url(songDetails.getAudio_file_url());
+        existingSong.setLyrics(songDetails.getLyrics());
+        existingSong.setCreated_at(songDetails.getCreated_at());
+        return songRepository.save(existingSong);
+    }
+
+    public void deleteSong(Integer songId) {
+        Song existingSong = getSongById(songId);
+        songRepository.delete(existingSong);
+    }
 }

@@ -6,13 +6,12 @@ import java.util.Objects;
 
 @Embeddable
 public class FavoriteSongId implements Serializable {
-    private Integer userId; // Match the type with your User entity ID type
-    private Integer songId; // Match the type with your Song entity ID type
+    private Integer userId;
+    private Integer songId;
 
-    // Default constructor
+
     public FavoriteSongId() {}
 
-    // Getters and Setters
     public Integer getUserId() {
         return userId;
     }
@@ -29,7 +28,7 @@ public class FavoriteSongId implements Serializable {
         this.songId = songId;
     }
 
-    // Override equals() and hashCode() methods
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

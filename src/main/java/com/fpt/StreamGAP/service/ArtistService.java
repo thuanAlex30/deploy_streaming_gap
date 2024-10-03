@@ -36,7 +36,6 @@ public class ArtistService {
         Artist artist = artistRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Không tìm thấy nghệ sĩ với ID: " + id));
 
-        // Cập nhật các thuộc tính từ artistDetails
         if (artistDetails.getName() != null) {
             artist.setName(artistDetails.getName());
         }

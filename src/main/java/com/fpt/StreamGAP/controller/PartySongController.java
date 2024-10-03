@@ -37,7 +37,7 @@ public class PartySongController {
         ReqRes response = new ReqRes();
         response.setStatusCode(200);
         response.setMessage("Party songs retrieved successfully");
-        response.setPartySongList(partySongDTOs); // Set party song list here
+        response.setPartySongList(partySongDTOs);
         return response;
     }
 

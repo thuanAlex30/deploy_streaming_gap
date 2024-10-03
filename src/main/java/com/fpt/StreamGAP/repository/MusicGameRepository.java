@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MusicGameRepository extends JpaRepository<MusicGame, Integer> {
-    // Additional custom queries can be defined here
+
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KaraokeSessionRepository extends JpaRepository<KaraokeSession, Integer> {
-    // Additional query methods can be defined here if needed
+
 }

@@ -38,7 +38,7 @@ public class MusicGameService {
     private MusicGameDTO convertToDTO(MusicGame musicGame) {
         MusicGameDTO dto = new MusicGameDTO();
         dto.setGameId(musicGame.getGame_id());
-        dto.setUserId(musicGame.getUser().getUser_id()); // Assuming getUser_id() exists in User
+        dto.setUserId(musicGame.getUser().getUser_id());
         dto.setScore(musicGame.getScore());
         dto.setGameType(musicGame.getGame_type());
         dto.setPlayedAt(musicGame.getPlayed_at());

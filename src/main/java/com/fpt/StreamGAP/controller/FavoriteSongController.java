@@ -1,6 +1,7 @@
 package com.fpt.StreamGAP.controller;
 
 import com.fpt.StreamGAP.dto.FavoriteSongDTO;
+import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.service.FavoriteSongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,14 @@ public class FavoriteSongController {
     private FavoriteSongService favoriteSongService;
 
     @GetMapping
-    public ResponseEntity<List<FavoriteSongDTO>> getAllFavoriteSongs() {
+    public ResponseEntity<ReqRes> getAllFavoriteSongs() {
         List<FavoriteSongDTO> favoriteSongs = favoriteSongService.getAllFavoriteSongs();
-        return new ResponseEntity<>(favoriteSongs, HttpStatus.OK);
-    }
 
+        ReqRes response = new ReqRes();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Favorite songs retrieved successfully.");
+        response.setFavoriteSongList(favoriteSongs);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

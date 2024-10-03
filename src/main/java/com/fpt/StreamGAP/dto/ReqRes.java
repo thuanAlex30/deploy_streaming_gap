@@ -41,6 +41,8 @@ public class ReqRes {
     private List<PartySongDTO> partySongList;
     private List<PartyModeDTO> partyModeList;
     private List<MusicGameDTO> musicGameList;
+    private List<KaraokeSessionDTO> karaokeSessionList;
+    private List<FavoriteSongDTO> favoriteSongList;
     @Getter
     private Song song;
 
@@ -51,5 +53,12 @@ public class ReqRes {
     }
     public void setSong(Song song) {
         this.song = song;
+    }
+
+    public void setKaraokeSessionList(List<KaraokeSessionDTO> karaokeSessionList) {
+        this.karaokeSessionList = karaokeSessionList;
+    }
+    public void setFavoriteSongList(List<FavoriteSongDTO> favoriteSongList) {
+        this.favoriteSongList = favoriteSongList;
     }
 }

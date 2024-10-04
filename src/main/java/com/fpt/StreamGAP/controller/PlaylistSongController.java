@@ -1,6 +1,6 @@
 package com.fpt.StreamGAP.controller;
 
-import com.fpt.StreamGAP.dto.PlaylistSongDTO;
+import com.fpt.StreamGAP.dto.FavoriteSongDTO;
 import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.entity.PlaylistSong;
 import com.fpt.StreamGAP.service.PlaylistSongService;
@@ -22,9 +22,9 @@ public class PlaylistSongController {
     public ReqRes getAllPlaylistSongs() {
         List<PlaylistSong> playlistSongs = playlistSongService.getAllPlaylistSongs();
 
-        List<PlaylistSongDTO> playlistSongDTOs = playlistSongs.stream()
+        List<FavoriteSongDTO.PlaylistSongDTO> playlistSongDTOs = playlistSongs.stream()
                 .map(playlistSong -> {
-                    PlaylistSongDTO dto = new PlaylistSongDTO();
+                    FavoriteSongDTO.PlaylistSongDTO dto = new FavoriteSongDTO.PlaylistSongDTO();
                     dto.setId(playlistSong.getId());
                     dto.setSong(playlistSong.getSong());
                     dto.setAdded_at(playlistSong.getAdded_at());
@@ -43,7 +43,7 @@ public class PlaylistSongController {
     public ResponseEntity<ReqRes> getPlaylistSongById(@PathVariable Integer id) {
         return playlistSongService.getPlaylistSongById(id)
                 .map(playlistSong -> {
-                    PlaylistSongDTO dto = new PlaylistSongDTO();
+                    FavoriteSongDTO.PlaylistSongDTO dto = new FavoriteSongDTO.PlaylistSongDTO();
                     dto.setId(playlistSong.getId());
                     dto.setSong(playlistSong.getSong()); //
                     dto.setAdded_at(playlistSong.getAdded_at());
@@ -66,7 +66,7 @@ public class PlaylistSongController {
     public ReqRes createPlaylistSong(@RequestBody PlaylistSong playlistSong) {
         PlaylistSong savedPlaylistSong = playlistSongService.savePlaylistSong(playlistSong);
 
-        PlaylistSongDTO dto = new PlaylistSongDTO();
+        FavoriteSongDTO.PlaylistSongDTO dto = new FavoriteSongDTO.PlaylistSongDTO();
         dto.setId(savedPlaylistSong.getId());
         dto.setSong(savedPlaylistSong.getSong());
         dto.setAdded_at(savedPlaylistSong.getAdded_at());
@@ -85,7 +85,7 @@ public class PlaylistSongController {
                     playlistSong.setId(id);
                     PlaylistSong updatedPlaylistSong = playlistSongService.savePlaylistSong(playlistSong);
 
-                    PlaylistSongDTO dto = new PlaylistSongDTO();
+                    FavoriteSongDTO.PlaylistSongDTO dto = new FavoriteSongDTO.PlaylistSongDTO();
                     dto.setId(updatedPlaylistSong.getId());
                     dto.setSong(updatedPlaylistSong.getSong());
                     dto.setAdded_at(updatedPlaylistSong.getAdded_at());

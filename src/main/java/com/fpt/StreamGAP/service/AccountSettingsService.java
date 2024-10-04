@@ -18,23 +18,14 @@ public class AccountSettingsService {
         return accountSettingsRepository.findAll();
     }
 
-    public AccountSettings getAccountSettingsById(Integer user_id) {
-        return accountSettingsRepository.findById(user_id)
-                .orElseThrow(() -> new RuntimeException("AccountSettings not found for id: " + user_id));
+    public Optional<AccountSettings> getAccountSettingsById(Integer user_id) {
+        return accountSettingsRepository.findById(user_id);
     }
 
-    public AccountSettings createAccountSettings(AccountSettings accountSettings) {
+    public AccountSettings saveAccountSettings(AccountSettings accountSettings) {
         return accountSettingsRepository.save(accountSettings);
     }
 
-    public AccountSettings updateAccountSettings(Integer user_id, AccountSettings accountSettings) {
-        AccountSettings existingAccountSettings = getAccountSettingsById(user_id);
-        existingAccountSettings.setPrivacy(accountSettings.getPrivacy());
-        existingAccountSettings.setEmail_notifications(accountSettings.getEmail_notifications());
-        existingAccountSettings.setVolume_level(accountSettings.getVolume_level());
-        existingAccountSettings.setSleep_timer(accountSettings.getSleep_timer());
-        return accountSettingsRepository.save(existingAccountSettings);
-    }
     public void deleteAccountSettings(Integer user_id) {
         accountSettingsRepository.deleteById(user_id);
     }

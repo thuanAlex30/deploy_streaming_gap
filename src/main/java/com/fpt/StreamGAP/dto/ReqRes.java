@@ -35,6 +35,7 @@ public class ReqRes {
     private List<User> userList;
     private List<Song> songList;
     private Integer albumId;
+    private List<AccountSettingsDTO> accountSettingsList;
     private List<FavoriteSongDTO.PlaylistSongDTO> playlistSongList;
     private List<PartySongDTO> partySongList;
     private List<PartyModeDTO> partyModeList;

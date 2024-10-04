@@ -13,7 +13,7 @@ public class AccountSettings {
     private Integer user_id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
     private String privacy = "public";

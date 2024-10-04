@@ -42,6 +42,7 @@ public class ReqRes {
     private List<KaraokeSessionDTO> karaokeSessionList;
     private List<FavoriteSongDTO> favoriteSongList;
     private List<AlbumsDTO> albumList;
+    private List<PlaylistDTO> playList;
     @Getter
     private Song song;
 

@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import  java.util.Date;
+
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,7 @@ public class ChatChannelController {
         ReqRes response = new ReqRes();
         try {
             ChatChannel savedChatChannel = chatChannelService.saveChatChannel(chatChannel);
-
+            chatChannel.setCreated_at(new Date(System.currentTimeMillis()));
             ChatChannelDTO dto = new ChatChannelDTO();
             dto.setChannel_id(savedChatChannel.getChannel_id());
             dto.setChannel_name(savedChatChannel.getChannel_name());
@@ -85,28 +86,31 @@ public class ChatChannelController {
     @PutMapping("/{id}")
     public ResponseEntity<ReqRes> updateChatChannel(@PathVariable Integer id, @RequestBody ChatChannel chatChannel) {
         return chatChannelService.getChatChannelById(id)
-                .map(exitingChatChannel -> {
+                .map(existingChatChannel -> {
                     chatChannel.setChannel_id(id);
+                    chatChannel.setCreated_at(new Date(System.currentTimeMillis()));
                     ChatChannel updatedChatChannel = chatChannelService.saveChatChannel(chatChannel);
 
                     ChatChannelDTO dto = new ChatChannelDTO();
                     dto.setChannel_id(updatedChatChannel.getChannel_id());
                     dto.setChannel_name(updatedChatChannel.getChannel_name());
-                    dto.setCreated_at((updatedChatChannel.getCreated_at()));
+                    dto.setCreated_at(updatedChatChannel.getCreated_at());
+
                     ReqRes response = new ReqRes();
                     response.setStatusCode(200);
-                    response.setMessage("ChatChannel  updated successfully");
+                    response.setMessage("ChatChannel updated successfully");
                     response.setChatChannel(List.of(dto));
                     return ResponseEntity.ok(response);
                 })
                 .orElseGet(() -> {
                     ReqRes response = new ReqRes();
                     response.setStatusCode(404);
-                    response.setMessage("ChatChannel  not found");
+                    response.setMessage("ChatChannel not found");
                     return ResponseEntity.status(404).body(response);
                 });
     }
-        @DeleteMapping("/{id}")
+
+    @DeleteMapping("/{id}")
         public ResponseEntity<ReqRes> deleteChatChannel(@PathVariable Integer id) {
             if (chatChannelService.getChatChannelById(id).isPresent()) {
                 chatChannelService.deleteChatChannel(id);

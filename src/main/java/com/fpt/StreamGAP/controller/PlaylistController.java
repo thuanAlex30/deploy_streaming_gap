@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,7 @@ public class PlaylistController {
         ReqRes response = new ReqRes();
         try {
             Playlist savedPlaylist = playlistService.savePlaylist(playlist);
-
+            playlist.setCreated_at(new Date(System.currentTimeMillis()));
             PlaylistDTO dto = new PlaylistDTO();
             dto.setUser(savedPlaylist.getUser());
             dto.setPlaylist_id(savedPlaylist.getPlaylist_id());
@@ -96,6 +97,7 @@ public class PlaylistController {
         return playlistService.getPlaylistById(id)
                 .map(existingPlaylist -> {
                     playlist.setPlaylist_id(id);
+                    playlist.setCreated_at(new Date(System.currentTimeMillis()));
                     Playlist updatedPlaylist = playlistService.savePlaylist(playlist);
 
                     PlaylistDTO dto = new PlaylistDTO();

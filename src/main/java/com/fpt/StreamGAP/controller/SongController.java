@@ -1,6 +1,7 @@
 package com.fpt.StreamGAP.controller;
 
 import com.fpt.StreamGAP.dto.ReqRes;
+import com.fpt.StreamGAP.dto.SongDTO;
 import com.fpt.StreamGAP.entity.Song;
 import com.fpt.StreamGAP.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/songs")
 public class SongController {
@@ -18,32 +19,126 @@ public class SongController {
     private SongService songService;
 
     @GetMapping
-    public ResponseEntity<List<Song>> getAllSongs() {
+    public ReqRes getAllSongs() {
         List<Song> songs = songService.getAllSongs();
-        return ResponseEntity.ok(songs);
+
+        // Convert Song entities to SongDTOs
+        List<SongDTO> songDTOs = songs.stream()
+                .map(song -> {
+                    SongDTO dto = new SongDTO();
+                    dto.setSong_id(song.getSong_id());
+                    dto.setAlbum(song.getAlbum());
+                    dto.setTitle(song.getTitle());
+                    dto.setGenre(song.getGenre());
+                    dto.setDuration(song.getDuration());
+                    dto.setAudio_file_url(song.getAudio_file_url());
+                    dto.setLyrics(song.getLyrics());
+                    dto.setCreated_at(song.getCreated_at());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        ReqRes response = new ReqRes();
+        response.setStatusCode(200);
+        response.setMessage("Songs retrieved successfully");
+        response.setSongDtoList(songDTOs); // Correct setter for SongDTO list
+
+        return response;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Song> getSongById(@PathVariable Integer id) {
+    public ResponseEntity<ReqRes> getSongById(@PathVariable Integer id) {
         Song song = songService.getSongById(id);
-        return ResponseEntity.ok(song);
+
+        // Convert to DTO
+        SongDTO dto = new SongDTO();
+        dto.setSong_id(song.getSong_id());
+        dto.setAlbum(song.getAlbum());
+        dto.setTitle(song.getTitle());
+        dto.setGenre(song.getGenre());
+        dto.setDuration(song.getDuration());
+        dto.setAudio_file_url(song.getAudio_file_url());
+        dto.setLyrics(song.getLyrics());
+        dto.setCreated_at(song.getCreated_at());
+
+        ReqRes response = new ReqRes();
+        response.setStatusCode(200);
+        response.setMessage("Song retrieved successfully");
+        response.setSongDtoList(List.of(dto)); // Correct setter for SongDTO list
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<Song> createSong(@RequestBody Song song) {
+    public ResponseEntity<ReqRes> createSong(@RequestBody Song song) {
         Song createdSong = songService.createSong(song);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdSong);
+
+        // Convert to DTO
+        SongDTO dto = new SongDTO();
+        dto.setSong_id(createdSong.getSong_id());
+        dto.setAlbum(createdSong.getAlbum());
+        dto.setTitle(createdSong.getTitle());
+        dto.setGenre(createdSong.getGenre());
+        dto.setDuration(createdSong.getDuration());
+        dto.setAudio_file_url(createdSong.getAudio_file_url());
+        dto.setLyrics(createdSong.getLyrics());
+        dto.setCreated_at(createdSong.getCreated_at());
+
+        ReqRes response = new ReqRes();
+        response.setStatusCode(201);
+        response.setMessage("Song created successfully");
+        response.setSongDtoList(List.of(dto)); // Correct setter for SongDTO list
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Song> updateSong(@PathVariable Integer id, @RequestBody Song song) {
-        Song updatedSong = songService.updateSong(id, song);
-        return ResponseEntity.ok(updatedSong);
+    public ResponseEntity<ReqRes> updateSong(@PathVariable Integer id, @RequestBody Song songDetails) {
+        Song existingSong = songService.getSongById(id);
+
+        if (existingSong != null) {
+            songDetails.setSong_id(id);
+            Song updatedSong = songService.updateSong(id, songDetails);
+
+            // Convert to DTO
+            SongDTO dto = new SongDTO();
+            dto.setSong_id(updatedSong.getSong_id());
+            dto.setAlbum(updatedSong.getAlbum());
+            dto.setTitle(updatedSong.getTitle());
+            dto.setGenre(updatedSong.getGenre());
+            dto.setDuration(updatedSong.getDuration());
+            dto.setAudio_file_url(updatedSong.getAudio_file_url());
+            dto.setLyrics(updatedSong.getLyrics());
+            dto.setCreated_at(updatedSong.getCreated_at());
+
+            ReqRes response = new ReqRes();
+            response.setStatusCode(200);
+            response.setMessage("Song updated successfully");
+            response.setSongDtoList(List.of(dto));
+
+            return ResponseEntity.ok(response);
+        } else {
+            ReqRes response = new ReqRes();
+            response.setStatusCode(404);
+            response.setMessage("Song not found");
+            return ResponseEntity.status(404).body(response);
+        }
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSong(@PathVariable Integer id) {
-        songService.deleteSong(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ReqRes> deleteSong(@PathVariable Integer id) {
+        if (songService.getSongById(id) != null) {
+            songService.deleteSong(id);
+            ReqRes response = new ReqRes();
+            response.setStatusCode(204);
+            response.setMessage("Song deleted successfully");
+            return ResponseEntity.noContent().build();
+        } else {
+            ReqRes response = new ReqRes();
+            response.setStatusCode(404);
+            response.setMessage("Song not found");
+            return ResponseEntity.status(404).body(response);
+        }
     }
 }

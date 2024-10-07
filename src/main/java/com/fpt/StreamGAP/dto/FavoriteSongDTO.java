@@ -19,5 +19,6 @@ public class FavoriteSongDTO {
         private Integer id;
         private Song song;
         private java.util.Date added_at;
+//        private User user; // Thêm thông tin người dùng
     }
 }

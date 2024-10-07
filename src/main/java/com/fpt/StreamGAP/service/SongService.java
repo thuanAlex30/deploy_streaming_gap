@@ -42,12 +42,23 @@ public class SongService {
 
     public Song updateSong(Integer songId, Song songDetails) {
         Song existingSong = getSongById(songId);
+
+        // Update song details
         existingSong.setTitle(songDetails.getTitle());
         existingSong.setGenre(songDetails.getGenre());
         existingSong.setDuration(songDetails.getDuration());
         existingSong.setAudio_file_url(songDetails.getAudio_file_url());
         existingSong.setLyrics(songDetails.getLyrics());
         existingSong.setCreated_at(songDetails.getCreated_at());
+
+        // Check if the album exists before updating
+        if (songDetails.getAlbum() != null) {
+            // Assuming album has a method to fetch by ID
+            Album album = albumRepository.findById(songDetails.getAlbum().getAlbum_id())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Album not found"));
+            existingSong.setAlbum(album);
+        }
+
         return songRepository.save(existingSong);
     }
 

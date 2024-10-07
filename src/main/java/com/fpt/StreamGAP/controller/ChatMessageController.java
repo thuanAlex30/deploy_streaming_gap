@@ -117,9 +117,9 @@ public class ChatMessageController {
         if (chatMessageService.getChatMessageById(id).isPresent()) {
             chatMessageService.deleteChatMessage(id);
             ReqRes response = new ReqRes();
-            response.setStatusCode(204);
+            response.setStatusCode(200);
             response.setMessage("Chat message deleted successfully");
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(response);
         } else {
             ReqRes response = new ReqRes();
             response.setStatusCode(404);
@@ -127,4 +127,5 @@ public class ChatMessageController {
             return ResponseEntity.status(404).body(response);
         }
     }
+
 }

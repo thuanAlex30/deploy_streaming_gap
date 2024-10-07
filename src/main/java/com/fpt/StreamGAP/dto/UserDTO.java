@@ -21,3 +21,4 @@ public class UserDTO {
     private Boolean accountNonExpired;
     private Boolean credentialsNonExpired;
 }
+

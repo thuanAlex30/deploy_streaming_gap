@@ -8,20 +8,13 @@ import jakarta.persistence.*;
 
 import java.sql.Date;
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaylistDTO {
     private Integer playlist_id;
     private User user;
     private String title;
     private Date created_at;
-    @Data
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class UserDTO {
-        private Integer user_id;
-        private String username;
-        private String email;
-        private String avatar_url;
-        private String role;
-    }
+
 
 }

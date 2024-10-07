@@ -43,13 +43,13 @@ public class ReqRes {
     private List<KaraokeSessionDTO> karaokeSessionList;
     private List<FavoriteSongDTO> favoriteSongList;
     private List<AlbumsDTO> albumList;
+    private List<CommentDTO> commentList;
     private List<PlaylistDTO> playList;
     private List<ChatChannelDTO> chatChannel;
 
     private List<ChatMessageDTO> chatMessageList;
-    private List<Artist> artistList;
-    private List<ArtistDTO> artistList;
-
+//    private List<Artist> artistList;
+//    private List<ArtistDTO> artistList;
     @Getter
     private Song song;
 

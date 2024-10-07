@@ -2,8 +2,7 @@ package com.fpt.StreamGAP.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fpt.StreamGAP.entity.Song;
-import com.fpt.StreamGAP.entity.User;
+import com.fpt.StreamGAP.entity.*;
 import lombok.Data;
 import lombok.Getter;
 
@@ -44,9 +43,16 @@ public class ReqRes {
     private List<KaraokeSessionDTO> karaokeSessionList;
     private List<FavoriteSongDTO> favoriteSongList;
     private List<AlbumsDTO> albumList;
+    private List<CommentDTO> commentList;
     private List<PlaylistDTO> playList;
     private List<ChatChannelDTO> chatChannel;
+
     private MusicGameDTO musicGame;
+
+    private List<ChatMessageDTO> chatMessageList;
+
+    private List<Artist> artistList;//
+
     @Getter
     private Song song;
 
@@ -66,8 +72,8 @@ public class ReqRes {
         this.favoriteSongList = favoriteSongList;
     }
 
-
     public void setSongDtoList(List<SongDTO> songDtoList) {
         this.songDtoList = songDtoList;
     }
+
 }

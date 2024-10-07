@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,7 +26,6 @@ public class KaraokeSessionService {
     @Autowired
     private KaraokeSessionRepository karaokeSessionRepository;
 
-
     public User getUserById(Integer userId) {
         return userRepository.findById(userId).orElse(null);
     }
@@ -36,10 +36,14 @@ public class KaraokeSessionService {
 
     public KaraokeSessionDTO createKaraokeSession(KaraokeSessionDTO karaokeSessionDTO, User user, Song song) {
         KaraokeSession karaokeSession = new KaraokeSession();
+        karaokeSession.setUser(user);
+        karaokeSession.setSong(song);
+        karaokeSession.setRecording_url(karaokeSessionDTO.getRecordingUrl());
+        karaokeSession.setCreated_at(new Date(System.currentTimeMillis()));
 
-        return karaokeSessionDTO;
+        karaokeSession = karaokeSessionRepository.save(karaokeSession);
+        return convertToDTO(karaokeSession);
     }
-
 
     public List<KaraokeSessionDTO> getAllKaraokeSessions() {
         List<KaraokeSession> sessions = karaokeSessionRepository.findAll();
@@ -50,11 +54,18 @@ public class KaraokeSessionService {
 
     private KaraokeSessionDTO convertToDTO(KaraokeSession session) {
         KaraokeSessionDTO dto = new KaraokeSessionDTO();
+        dto.setSessionId(session.getSession_id());
+        dto.setUserId(session.getUser().getUser_id());
+        dto.setSongId(session.getSong().getSong_id());
+        dto.setRecordingUrl(session.getRecording_url());
+        dto.setCreatedAt(session.getCreated_at());
         return dto;
     }
+
     public void deleteKaraokeSession(Integer sessionId) {
         karaokeSessionRepository.deleteById(sessionId);
     }
+
     public Optional<KaraokeSessionDTO> getKaraokeSessionById(Integer sessionId) {
         Optional<KaraokeSession> session = karaokeSessionRepository.findById(sessionId);
         return session.map(this::convertToDTO);

@@ -1,20 +1,20 @@
 package com.fpt.StreamGAP.dto;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fpt.StreamGAP.entity.Song;
 import lombok.Data;
-import com.fpt.StreamGAP.entity.User;
-import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
+
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PlaylistDTO {
-    private Integer playlist_id;
-    private User user;
-    private String title;
-    private Date created_at;
-
+public class ChatMessageDTO {
+    private Integer messageId;
+    private String content;
+    private Date createdAt;
+    private Integer channelId;
+    private Integer userId;
 
 }

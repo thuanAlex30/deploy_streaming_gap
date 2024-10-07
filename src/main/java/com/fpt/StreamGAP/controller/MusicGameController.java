@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 @RestController
@@ -17,7 +18,6 @@ public class MusicGameController {
     @Autowired
     private MusicGameService musicGameService;
 
-
     @GetMapping
     public ReqRes getAllMusicGames() {
         ReqRes response = new ReqRes();
@@ -25,7 +25,7 @@ public class MusicGameController {
             List<MusicGameDTO> musicGames = musicGameService.getAllMusicGames();
             response.setStatusCode(200);
             response.setMessage("Success");
-            response.setMusicGameList(musicGames);
+            response.setMusicGameList(musicGames);  // Use setMusicGameList
         } catch (Exception e) {
             response.setStatusCode(404);
             response.setMessage("Error occurred while fetching music games: " + e.getMessage());
@@ -40,14 +40,16 @@ public class MusicGameController {
         if (musicGame.isPresent()) {
             response.setStatusCode(200);
             response.setMessage("Success");
-            response.setMusicGame(musicGame.get());
+
+            // Create a list with a single item and set it
+            List<MusicGameDTO> musicGameList = Collections.singletonList(musicGame.get());
+            response.setMusicGameList(musicGameList);  // Use setMusicGameList
         } else {
             response.setStatusCode(404);
             response.setMessage("Music game not found with ID: " + id);
         }
         return response;
     }
-
 
     @PostMapping
     public ReqRes createMusicGame(@RequestBody MusicGame musicGame) {
@@ -56,14 +58,16 @@ public class MusicGameController {
             MusicGame savedGame = musicGameService.saveMusicGame(musicGame);
             response.setStatusCode(201);
             response.setMessage("Music game created successfully");
-            response.setMusicGame(musicGameService.convertToDTO(savedGame));
+
+            // Convert to DTO and set it as a single item list
+            List<MusicGameDTO> musicGameList = Collections.singletonList(musicGameService.convertToDTO(savedGame));
+            response.setMusicGameList(musicGameList);  // Use setMusicGameList
         } catch (Exception e) {
             response.setStatusCode(404);
             response.setMessage("Error occurred while creating music game: " + e.getMessage());
         }
         return response;
     }
-
 
     @PutMapping("/{id}")
     public ReqRes updateMusicGame(@PathVariable Integer id, @RequestBody MusicGame musicGame) {
@@ -75,7 +79,10 @@ public class MusicGameController {
                 MusicGame updatedGame = musicGameService.saveMusicGame(musicGame);
                 response.setStatusCode(200);
                 response.setMessage("Music game updated successfully");
-                response.setMusicGame(musicGameService.convertToDTO(updatedGame));
+
+                // Convert to DTO and set it as a single item list
+                List<MusicGameDTO> musicGameList = Collections.singletonList(musicGameService.convertToDTO(updatedGame));
+                response.setMusicGameList(musicGameList);  // Use setMusicGameList
             } catch (Exception e) {
                 response.setStatusCode(404);
                 response.setMessage("Error occurred while updating music game: " + e.getMessage());
@@ -87,7 +94,6 @@ public class MusicGameController {
         return response;
     }
 
-    // Xóa một trò chơi âm nhạc theo ID
     @DeleteMapping("/{id}")
     public ReqRes deleteMusicGame(@PathVariable Integer id) {
         ReqRes response = new ReqRes();
@@ -107,4 +113,5 @@ public class MusicGameController {
         return response;
     }
 }
+
 

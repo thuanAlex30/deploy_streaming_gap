@@ -56,8 +56,8 @@ public class UserManagementService {
     public ReqRes  login(ReqRes loginRequest){
         ReqRes response = new ReqRes();
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
-            var user =userRepo.findByEmail(loginRequest.getEmail()).orElseThrow();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
+            var user =userRepo.findByusername(loginRequest.getUsername()).orElseThrow();
             var jwt=jwtUtils.generateRefreshToken(new HashMap<>(),user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             response.setStatusCode(200);
@@ -76,7 +76,7 @@ public class UserManagementService {
         ReqRes response = new ReqRes();
         try{
             String ourEmail = jwtUtils.extractUsername(refreshTokenReqiest.getToken());
-            User user=userRepo.findByEmail(ourEmail).orElseThrow();
+            User user=userRepo.findByusername(ourEmail).orElseThrow();
             if(jwtUtils.isTokenValid(refreshTokenReqiest.getToken(),user)){
                 var jwt=jwtUtils.generateToken(user);
                 response.setStatusCode(200);
@@ -172,10 +172,10 @@ public class UserManagementService {
         }
         return reqRes;
     }
-    public ReqRes getMyInfo(String email){
+    public ReqRes getMyInfo(String username){
         ReqRes reqRes = new ReqRes();
         try {
-            Optional<User> userOptional = userRepo.findByEmail(email);
+            Optional<User> userOptional = userRepo.findByusername(username);
             if (userOptional.isPresent()) {
                 reqRes.setUser(userOptional.get());
                 reqRes.setStatusCode(200);

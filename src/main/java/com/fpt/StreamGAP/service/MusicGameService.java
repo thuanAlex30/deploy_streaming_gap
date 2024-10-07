@@ -16,26 +16,31 @@ public class MusicGameService {
     @Autowired
     private MusicGameRepository musicGameRepository;
 
+
     public List<MusicGameDTO> getAllMusicGames() {
         return musicGameRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+
     public Optional<MusicGameDTO> getMusicGameById(Integer id) {
         return musicGameRepository.findById(id)
                 .map(this::convertToDTO);
     }
 
+
     public MusicGame saveMusicGame(MusicGame musicGame) {
         return musicGameRepository.save(musicGame);
     }
+
 
     public void deleteMusicGame(Integer id) {
         musicGameRepository.deleteById(id);
     }
 
-    private MusicGameDTO convertToDTO(MusicGame musicGame) {
+
+    public MusicGameDTO convertToDTO(MusicGame musicGame) {
         MusicGameDTO dto = new MusicGameDTO();
         dto.setGameId(musicGame.getGame_id());
         dto.setUserId(musicGame.getUser().getUser_id());
@@ -45,3 +50,4 @@ public class MusicGameService {
         return dto;
     }
 }
+

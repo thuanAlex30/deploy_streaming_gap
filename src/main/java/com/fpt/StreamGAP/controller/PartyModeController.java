@@ -2,6 +2,7 @@ package com.fpt.StreamGAP.controller;
 
 import com.fpt.StreamGAP.dto.PartyModeDTO;
 import com.fpt.StreamGAP.entity.PartyMode;
+import com.fpt.StreamGAP.entity.User;
 import com.fpt.StreamGAP.service.PartyModeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fpt.StreamGAP.dto.ReqRes;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.sql.Date;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,15 +25,13 @@ public class PartyModeController {
     public ReqRes getAllPartyModes() {
         List<PartyMode> partyModes = partyModeService.getAllPartyModes();
 
-        // Convert PartyMode entities to PartyModeDTOs
         List<PartyModeDTO> partyModeDTOs = partyModes.stream()
                 .map(partyMode -> {
                     PartyModeDTO dto = new PartyModeDTO();
-                    dto.setPartyId(partyMode.getParty_id());
-                    dto.setPartyName(partyMode.getParty_name());
-                    dto.setHostId(partyMode.getHost().getUser_id());
-                    dto.setHostName(partyMode.getHost().getUsername());
-                    dto.setCreatedAt(partyMode.getCreated_at().toString());
+                    dto.setParty_Id(partyMode.getParty_id());
+                    dto.setParty_Name(partyMode.getParty_name());
+                    dto.setHost_Id(partyMode.getHost() != null ? partyMode.getHost().getUser_id() : null);
+                    dto.setCreated_At(partyMode.getCreated_at());
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class PartyModeController {
         ReqRes response = new ReqRes();
         response.setStatusCode(200);
         response.setMessage("Party modes retrieved successfully");
-        response.setPartyModeList(partyModeDTOs); // Assuming ReqRes has this method
+        response.setPartyModeList(partyModeDTOs);
 
         return response;
     }
@@ -49,38 +49,41 @@ public class PartyModeController {
         PartyMode partyMode = partyModeService.getPartyModeById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy PartyMode với ID: " + id));
 
-        // Convert to DTO
         PartyModeDTO dto = new PartyModeDTO();
-        dto.setPartyId(partyMode.getParty_id());
-        dto.setPartyName(partyMode.getParty_name());
-        dto.setHostId(partyMode.getHost().getUser_id());
-        dto.setHostName(partyMode.getHost().getUsername());
-        dto.setCreatedAt(partyMode.getCreated_at().toString());
+        dto.setParty_Id(partyMode.getParty_id());
+        dto.setParty_Name(partyMode.getParty_name());
+        dto.setHost_Id(partyMode.getHost() != null ? partyMode.getHost().getUser_id() : null);
+        dto.setCreated_At(partyMode.getCreated_at());
 
         ReqRes response = new ReqRes();
         response.setStatusCode(200);
         response.setMessage("Party mode retrieved successfully");
-        response.setPartyModeList(List.of(dto)); // Wrap DTO in a list
+        response.setPartyModeList(List.of(dto));
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<ReqRes> createPartyMode(@RequestBody PartyMode partyMode) {
+
+        System.out.println("Received PartyMode: " + partyMode);
+
+        if (partyMode.getHost() == null || partyMode.getHost().getUser_id() == null) {
+            throw new RuntimeException("Host must be provided for PartyMode.");
+        }
+
         PartyMode createdPartyMode = partyModeService.savePartyMode(partyMode);
 
-        // Convert to DTO
         PartyModeDTO dto = new PartyModeDTO();
-        dto.setPartyId(createdPartyMode.getParty_id());
-        dto.setPartyName(createdPartyMode.getParty_name());
-        dto.setHostId(createdPartyMode.getHost().getUser_id());
-        dto.setHostName(createdPartyMode.getHost().getUsername());
-        dto.setCreatedAt(createdPartyMode.getCreated_at().toString());
+        dto.setParty_Id(createdPartyMode.getParty_id());
+        dto.setParty_Name(createdPartyMode.getParty_name());
+        dto.setHost_Id(createdPartyMode.getHost().getUser_id());
+        dto.setCreated_At(createdPartyMode.getCreated_at());
 
         ReqRes response = new ReqRes();
         response.setStatusCode(201);
         response.setMessage("Party mode created successfully");
-        response.setPartyModeList(List.of(dto)); // Wrap DTO in a list
+        response.setPartyModeList(List.of(dto));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -89,17 +92,23 @@ public class PartyModeController {
     public ResponseEntity<ReqRes> updatePartyMode(@PathVariable Integer id, @RequestBody PartyMode partyModeDetails) {
         return partyModeService.getPartyModeById(id)
                 .map(existingPartyMode -> {
+                    if (partyModeDetails.getParty_name() != null) {
+                        existingPartyMode.setParty_name(partyModeDetails.getParty_name());
+                    }
+                    if (partyModeDetails.getHost() != null) {
+                        existingPartyMode.setHost(partyModeDetails.getHost());
+                    }
+                    if (partyModeDetails.getCreated_at() != null) {
+                        existingPartyMode.setCreated_at(partyModeDetails.getCreated_at());
+                    }
 
-                    partyModeDetails.setParty_id(id);
-                    PartyMode updatedPartyMode = partyModeService.savePartyMode(partyModeDetails);
-
+                    PartyMode updatedPartyMode = partyModeService.savePartyMode(existingPartyMode);
 
                     PartyModeDTO dto = new PartyModeDTO();
-                    dto.setPartyId(updatedPartyMode.getParty_id());
-                    dto.setPartyName(updatedPartyMode.getParty_name());
-                    dto.setHostId(updatedPartyMode.getHost().getUser_id());
-                    dto.setHostName(updatedPartyMode.getHost().getUsername());
-                    dto.setCreatedAt(updatedPartyMode.getCreated_at().toString());
+                    dto.setParty_Id(updatedPartyMode.getParty_id());
+                    dto.setParty_Name(updatedPartyMode.getParty_name());
+                    dto.setHost_Id(updatedPartyMode.getHost() != null ? updatedPartyMode.getHost().getUser_id() : null);
+                    dto.setCreated_At(updatedPartyMode.getCreated_at());
 
                     ReqRes response = new ReqRes();
                     response.setStatusCode(200);
@@ -116,7 +125,6 @@ public class PartyModeController {
                 });
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<ReqRes> deletePartyMode(@PathVariable Integer id) {
         if (partyModeService.getPartyModeById(id).isPresent()) {
@@ -132,7 +140,6 @@ public class PartyModeController {
             return ResponseEntity.status(404).body(response);
         }
     }
-
-
 }
+
 

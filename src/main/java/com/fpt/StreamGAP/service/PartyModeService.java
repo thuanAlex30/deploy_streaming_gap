@@ -23,14 +23,18 @@ public class PartyModeService {
     }
 
     public PartyMode savePartyMode(PartyMode partyMode) {
+        // Validate that the host is present
+        if (partyMode.getHost() == null || partyMode.getHost().getUser_id() == null) {
+            throw new RuntimeException("Host must be provided for PartyMode.");
+        }
         return partyModeRepository.save(partyMode);
     }
 
     public PartyMode updatePartyMode(Integer id, PartyMode partyModeDetails) {
-        PartyMode partyMode = partyModeRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Không tìm thấy Party Mode với ID: " + id));
+        PartyMode partyMode = partyModeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy Party Mode với ID: " + id));
 
-        // Cập nhật các thuộc tính từ partyModeDetails
+        // Update properties from partyModeDetails
         if (partyModeDetails.getParty_name() != null) {
             partyMode.setParty_name(partyModeDetails.getParty_name());
         }
@@ -45,6 +49,10 @@ public class PartyModeService {
     }
 
     public void deletePartyMode(Integer id) {
+        // Check if the party mode exists before attempting to delete
+        if (!partyModeRepository.existsById(id)) {
+            throw new RuntimeException("Không tìm thấy Party Mode với ID: " + id);
+        }
         partyModeRepository.deleteById(id);
     }
 }

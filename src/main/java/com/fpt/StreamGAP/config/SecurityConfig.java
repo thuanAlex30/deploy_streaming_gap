@@ -81,10 +81,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/partysongs/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/partysongs/**").hasAuthority("ADMIN")
 
-                                .requestMatchers("/partysongs/**").hasAnyAuthority("ADMIN", "USER")
-                                .requestMatchers(HttpMethod.POST, "/partysongs/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/partysongs/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/partysongs/**").hasAuthority("ADMIN")
+                                .requestMatchers("/partymodes/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/partymodes/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/partymodes/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/partymodes/**").hasAuthority("ADMIN")
 
                                 .requestMatchers("/musicgames/**").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers(HttpMethod.POST, "/musicgames/**").hasAuthority("ADMIN")

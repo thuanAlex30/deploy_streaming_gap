@@ -1,12 +1,14 @@
 package com.fpt.StreamGAP.dto;
 
+import com.fpt.StreamGAP.entity.User;
 import lombok.Data;
+
+import java.sql.Date;
 
 @Data
 public class PartyModeDTO {
-    private Integer partyId;
-    private String partyName;
-    private Integer hostId;
-    private String hostName;
-    private String createdAt;
+    private Integer party_Id;
+    private String party_Name;
+    private Integer host_Id;
+    private Date created_At;
 }

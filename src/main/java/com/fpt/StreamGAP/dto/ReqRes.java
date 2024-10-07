@@ -46,10 +46,15 @@ public class ReqRes {
     private List<CommentDTO> commentList;
     private List<PlaylistDTO> playList;
     private List<ChatChannelDTO> chatChannel;
+<<<<<<< HEAD
 
     private List<ChatMessageDTO> chatMessageList;
 //    private List<Artist> artistList;
 //    private List<ArtistDTO> artistList;
+=======
+    private List<ChatMessageDTO> chatMessageList;//
+    private List<Artist> artistList;//
+>>>>>>> def32301109ed16b06e575612cbc63018f9a4937
     @Getter
     private Song song;
 

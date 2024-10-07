@@ -17,36 +17,78 @@ public class ArtistController {
     private ArtistService artistService;
 
     @GetMapping
-    public List<Artist> getAllArtists() {
-        return artistService.getAllArtists();
+    public ReqRes getAllArtists() {
+        List<Artist> artists = artistService.getAllArtists();
+        ReqRes response = new ReqRes();
+        response.setStatusCode(200);
+        response.setMessage("Artists retrieved successfully");
+        response.setArtistList(artists);  // Bạn cần định nghĩa thêm trong `ReqRes`
+        return response;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Artist> getArtistById(@PathVariable Integer id) {
-        return ResponseEntity.ok(artistService.getArtistById(id));
+    public ResponseEntity<ReqRes> getArtistById(@PathVariable Integer id) {
+        return artistService.getArtistById(id)
+                .map(artist -> {
+                    ReqRes response = new ReqRes();
+                    response.setStatusCode(200);
+                    response.setMessage("Artist retrieved successfully");
+                    response.setArtistList(List.of(artist));
+                    return ResponseEntity.ok(response);
+                })
+                .orElseGet(() -> {
+                    ReqRes response = new ReqRes();
+                    response.setStatusCode(404);
+                    response.setMessage("Artist not found");
+                    return ResponseEntity.status(404).body(response);
+                });
     }
 
     @PostMapping
-    public ResponseEntity<Artist> createArtist(@RequestBody Artist artist) {
-        Artist newArtist = artistService.saveArtist(artist);
-        return ResponseEntity.ok(newArtist);
+    public ReqRes createArtist(@RequestBody Artist artist) {
+        Artist savedArtist = artistService.saveArtist(artist);
+        ReqRes response = new ReqRes();
+        response.setStatusCode(201);
+        response.setMessage("Artist created successfully");
+        response.setArtistList(List.of(savedArtist));
+        return response;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Artist> updateArtist(@PathVariable Integer id, @RequestBody Artist artistDetails) {
-        try {
-            // Gọi hàm updateArtist trong service để thực hiện cập nhật
-            Artist updatedArtist = artistService.updateArtist(id, artistDetails);
-            return ResponseEntity.ok(updatedArtist);
-        } catch (RuntimeException e) {
-            // Nếu không tìm thấy nghệ sĩ hoặc có lỗi khác, trả về Not Found
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ReqRes> updateArtist(@PathVariable Integer id, @RequestBody Artist artist) {
+        return artistService.getArtistById(id)
+                .map(existingArtist -> {
+                    artist.setArtist_id(id);
+                    Artist updatedArtist = artistService.saveArtist(artist);
+
+                    ReqRes response = new ReqRes();
+                    response.setStatusCode(200);
+                    response.setMessage("Artist updated successfully");
+                    response.setArtistList(List.of(updatedArtist));
+                    return ResponseEntity.ok(response);
+                })
+                .orElseGet(() -> {
+                    ReqRes response = new ReqRes();
+                    response.setStatusCode(404);
+                    response.setMessage("Artist not found");
+                    return ResponseEntity.status(404).body(response);
+                });
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArtist(@PathVariable Integer id) {
-        artistService.deleteArtist(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ReqRes> deleteArtist(@PathVariable Integer id) {
+        if (artistService.getArtistById(id).isPresent()) {
+            artistService.deleteArtist(id);
+            ReqRes response = new ReqRes();
+            response.setStatusCode(204);
+            response.setMessage("Artist deleted successfully");
+            return ResponseEntity.noContent().build();
+        } else {
+            ReqRes response = new ReqRes();
+            response.setStatusCode(404);
+            response.setMessage("Artist not found");
+            return ResponseEntity.status(404).body(response);
+        }
     }
+
 }

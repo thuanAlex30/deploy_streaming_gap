@@ -3,7 +3,9 @@ package com.fpt.StreamGAP.service;
 import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.entity.Album;
 import com.fpt.StreamGAP.entity.Song;
+import com.fpt.StreamGAP.entity.SongListenStats;
 import com.fpt.StreamGAP.repository.AlbumRepository;
+import com.fpt.StreamGAP.repository.SongListenStatsRepository;
 import com.fpt.StreamGAP.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,14 +25,30 @@ public class SongService {
     @Autowired
     private AlbumRepository albumRepository;
 
+    @Autowired
+    private SongListenStatsRepository songListenStatsRepository;
+
     public List<Song> getAllSongs() {
         return songRepository.findAll();
     }
 
-    public Song getSongById(Integer songId) {
-        return songRepository.findById(songId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Song not found"));
+    public Song getSongById(Integer id) {
+        Song song = songRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Song not found"));
+
+        SongListenStats stats = songListenStatsRepository.findBySong(song);
+        if (stats == null) {
+            stats = new SongListenStats();
+            stats.setSong(song);
+        }
+
+        // Tăng số lượt nghe
+        stats.setListen_count(stats.getListen_count() + 1);
+        songListenStatsRepository.save(stats);
+
+        return song;
     }
+
 
     public Song createSong(Song song) {
         try {

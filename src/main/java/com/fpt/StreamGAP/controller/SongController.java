@@ -2,7 +2,9 @@ package com.fpt.StreamGAP.controller;
 
 import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.dto.SongDTO;
+import com.fpt.StreamGAP.dto.StatisticsDTO; // Import StatisticsDTO
 import com.fpt.StreamGAP.entity.Song;
+import com.fpt.StreamGAP.service.SongListenStatsService; // Import service
 import com.fpt.StreamGAP.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/songs")
 public class SongController {
@@ -18,11 +21,13 @@ public class SongController {
     @Autowired
     private SongService songService;
 
+    @Autowired
+    private SongListenStatsService songListenStatsService; // Khai báo dịch vụ
+
     @GetMapping
     public ReqRes getAllSongs() {
         List<Song> songs = songService.getAllSongs();
 
-        // Convert Song entities to SongDTOs
         List<SongDTO> songDTOs = songs.stream()
                 .map(song -> {
                     SongDTO dto = new SongDTO();
@@ -34,6 +39,11 @@ public class SongController {
                     dto.setAudio_file_url(song.getAudio_file_url());
                     dto.setLyrics(song.getLyrics());
                     dto.setCreated_at(song.getCreated_at());
+
+                    // Lấy số lượt nghe từ StatisticsDTO
+                    StatisticsDTO stats = songListenStatsService.getStatsBySongId(song.getSong_id());
+                    dto.setListen_count(stats != null ? (int) stats.getCount() : 0); // Chuyển đổi count thành int
+
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -41,7 +51,7 @@ public class SongController {
         ReqRes response = new ReqRes();
         response.setStatusCode(200);
         response.setMessage("Songs retrieved successfully");
-        response.setSongDtoList(songDTOs); // Correct setter for SongDTO list
+        response.setSongDtoList(songDTOs);
 
         return response;
     }
@@ -50,7 +60,6 @@ public class SongController {
     public ResponseEntity<ReqRes> getSongById(@PathVariable Integer id) {
         Song song = songService.getSongById(id);
 
-        // Convert to DTO
         SongDTO dto = new SongDTO();
         dto.setSong_id(song.getSong_id());
         dto.setAlbum(song.getAlbum());
@@ -61,10 +70,14 @@ public class SongController {
         dto.setLyrics(song.getLyrics());
         dto.setCreated_at(song.getCreated_at());
 
+        // Lấy số lượt nghe từ StatisticsDTO
+        StatisticsDTO stats = songListenStatsService.getStatsBySongId(song.getSong_id());
+        dto.setListen_count(stats != null ? (int) stats.getCount() : 0); // Chuyển đổi count thành int
+
         ReqRes response = new ReqRes();
         response.setStatusCode(200);
         response.setMessage("Song retrieved successfully");
-        response.setSongDtoList(List.of(dto)); // Correct setter for SongDTO list
+        response.setSongDtoList(List.of(dto));
 
         return ResponseEntity.ok(response);
     }
@@ -72,8 +85,6 @@ public class SongController {
     @PostMapping
     public ResponseEntity<ReqRes> createSong(@RequestBody Song song) {
         Song createdSong = songService.createSong(song);
-
-        // Convert to DTO
         SongDTO dto = new SongDTO();
         dto.setSong_id(createdSong.getSong_id());
         dto.setAlbum(createdSong.getAlbum());
@@ -84,10 +95,13 @@ public class SongController {
         dto.setLyrics(createdSong.getLyrics());
         dto.setCreated_at(createdSong.getCreated_at());
 
+        // Đặt số lượt nghe mặc định là 0 cho bài hát mới
+        dto.setListen_count(0);
+
         ReqRes response = new ReqRes();
         response.setStatusCode(201);
         response.setMessage("Song created successfully");
-        response.setSongDtoList(List.of(dto)); // Correct setter for SongDTO list
+        response.setSongDtoList(List.of(dto));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -100,7 +114,6 @@ public class SongController {
             songDetails.setSong_id(id);
             Song updatedSong = songService.updateSong(id, songDetails);
 
-            // Convert to DTO
             SongDTO dto = new SongDTO();
             dto.setSong_id(updatedSong.getSong_id());
             dto.setAlbum(updatedSong.getAlbum());
@@ -110,6 +123,10 @@ public class SongController {
             dto.setAudio_file_url(updatedSong.getAudio_file_url());
             dto.setLyrics(updatedSong.getLyrics());
             dto.setCreated_at(updatedSong.getCreated_at());
+
+            // Lấy số lượt nghe từ StatisticsDTO
+            StatisticsDTO stats = songListenStatsService.getStatsBySongId(updatedSong.getSong_id());
+            dto.setListen_count(stats != null ? (int) stats.getCount() : 0); // Chuyển đổi count thành int
 
             ReqRes response = new ReqRes();
             response.setStatusCode(200);
@@ -124,7 +141,6 @@ public class SongController {
             return ResponseEntity.status(404).body(response);
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ReqRes> deleteSong(@PathVariable Integer id) {

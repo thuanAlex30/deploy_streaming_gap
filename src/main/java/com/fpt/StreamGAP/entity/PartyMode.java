@@ -3,6 +3,7 @@ package com.fpt.StreamGAP.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.sql.Date;
+import java.sql.Date;
 
 @Entity
 @Table(name = "Party_Mode")
@@ -20,4 +21,9 @@ public class PartyMode {
     private User host;
 
     private Date created_at;
+
+    @PrePersist
+    protected void onCreate() {
+        this.created_at = new Date(System.currentTimeMillis());
+    }
 }

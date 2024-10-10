@@ -49,6 +49,7 @@ public class ReqRes {
     private MusicGameDTO musicGame;
     private List<ChatMessageDTO> chatMessageList;
     private List<ArtistDTO> artistList;
+    private List<SongListenStatsDTO> songListenStatsList;
 
     @Getter
     private Song song;

@@ -2,7 +2,6 @@ package com.fpt.StreamGAP.controller;
 
 import com.fpt.StreamGAP.dto.PartyModeDTO;
 import com.fpt.StreamGAP.entity.PartyMode;
-import com.fpt.StreamGAP.entity.User;
 import com.fpt.StreamGAP.service.PartyModeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fpt.StreamGAP.dto.ReqRes;
@@ -11,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.sql.Date;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 
@@ -71,8 +70,8 @@ public class PartyModeController {
             throw new RuntimeException("Host must be provided for PartyMode.");
         }
 
-        // Sử dụng java.sql.Date để khởi tạo created_at
-        partyMode.setCreated_at(new Date(System.currentTimeMillis())); // Khởi tạo với thời gian hiện tại
+
+        partyMode.setCreated_at(new Date(System.currentTimeMillis()));
 
         PartyMode createdPartyMode = partyModeService.savePartyMode(partyMode);
 
@@ -80,7 +79,7 @@ public class PartyModeController {
         dto.setParty_Id(createdPartyMode.getParty_id());
         dto.setParty_Name(createdPartyMode.getParty_name());
         dto.setHost_Id(createdPartyMode.getHost().getUser_id());
-        dto.setCreated_at(createdPartyMode.getCreated_at()); // Đảm bảo sử dụng đúng tên biến
+        dto.setCreated_at(createdPartyMode.getCreated_at());
 
         ReqRes response = new ReqRes();
         response.setStatusCode(201);

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Date;
 @Service
 public class PartyModeService {
 
@@ -34,22 +34,21 @@ public class PartyModeService {
         PartyMode partyMode = partyModeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy Party Mode với ID: " + id));
 
-        // Update properties from partyModeDetails
         if (partyModeDetails.getParty_name() != null) {
             partyMode.setParty_name(partyModeDetails.getParty_name());
         }
+
         if (partyModeDetails.getHost() != null) {
             partyMode.setHost(partyModeDetails.getHost());
         }
-        if (partyModeDetails.getCreated_at() != null) {
-            partyMode.setCreated_at(partyModeDetails.getCreated_at());
-        }
+
+        partyMode.setCreated_at(new Date());
 
         return partyModeRepository.save(partyMode);
     }
 
+
     public void deletePartyMode(Integer id) {
-        // Check if the party mode exists before attempting to delete
         if (!partyModeRepository.existsById(id)) {
             throw new RuntimeException("Không tìm thấy Party Mode với ID: " + id);
         }

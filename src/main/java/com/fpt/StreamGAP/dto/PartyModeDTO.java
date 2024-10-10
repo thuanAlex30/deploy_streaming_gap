@@ -3,7 +3,7 @@ package com.fpt.StreamGAP.dto;
 import com.fpt.StreamGAP.entity.User;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 public class PartyModeDTO {

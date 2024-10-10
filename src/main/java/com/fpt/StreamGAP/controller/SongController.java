@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,7 @@ public class SongController {
 
     @PostMapping
     public ResponseEntity<ReqRes> createSong(@RequestBody Song song) {
+
         Song createdSong = songService.createSong(song);
         SongDTO dto = new SongDTO();
         dto.setSong_id(createdSong.getSong_id());
@@ -95,7 +97,7 @@ public class SongController {
         dto.setLyrics(createdSong.getLyrics());
         dto.setCreated_at(createdSong.getCreated_at());
 
-        // Đặt số lượt nghe mặc định là 0 cho bài hát mới
+
         dto.setListen_count(0);
 
         ReqRes response = new ReqRes();

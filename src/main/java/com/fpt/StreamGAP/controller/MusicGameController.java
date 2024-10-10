@@ -80,7 +80,6 @@ public class MusicGameController {
                 response.setStatusCode(200);
                 response.setMessage("Music game updated successfully");
 
-                // Convert to DTO and set it as a single item list
                 List<MusicGameDTO> musicGameList = Collections.singletonList(musicGameService.convertToDTO(updatedGame));
                 response.setMusicGameList(musicGameList);  // Use setMusicGameList
             } catch (Exception e) {

@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 
 public interface SongListenStatsRepository extends JpaRepository<SongListenStats, Integer> {
-    SongListenStats findBySong(Song song);
+    List<SongListenStats> findBySong(Song song);
 }

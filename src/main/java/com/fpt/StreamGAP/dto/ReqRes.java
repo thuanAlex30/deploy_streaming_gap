@@ -48,6 +48,7 @@ public class ReqRes {
     private List<ChatChannelDTO> chatChannel;
     private List<ChatMessageDTO> chatMessageList;
     private List<ArtistDTO> artistList;
+    private List<SongListenStatsDTO> songListenStatsList;
 
     @Getter
     private Song song;

@@ -46,7 +46,6 @@ public class ReqRes {
     private List<CommentDTO> commentList;
     private List<PlaylistDTO> playList;
     private List<ChatChannelDTO> chatChannel;
-    private MusicGameDTO musicGame;
     private List<ChatMessageDTO> chatMessageList;
     private List<ArtistDTO> artistList;
 

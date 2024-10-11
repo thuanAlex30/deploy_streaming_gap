@@ -10,6 +10,7 @@ import com.fpt.StreamGAP.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class CommentService {
         comment.setUser(user);
         comment.setSong(song);
         comment.setContent(commentDTO.getContent());
-        comment.setCreatedAt(LocalDateTime.now());
+        comment.setCreatedAt(new Date(System.currentTimeMillis()));
         comment = commentRepository.save(comment);
         return convertToDTO(comment);
     }
@@ -57,7 +58,7 @@ public class CommentService {
         if (optionalComment.isPresent()) {
             Comment comment = optionalComment.get();
             comment.setContent(commentDTO.getContent());
-            comment.setCreatedAt(LocalDateTime.now());
+            comment.setCreatedAt(new Date(System.currentTimeMillis()));
 
             comment = commentRepository.save(comment);
             return convertToDTO(comment);

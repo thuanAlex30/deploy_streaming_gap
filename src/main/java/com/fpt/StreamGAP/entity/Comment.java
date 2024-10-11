@@ -2,7 +2,7 @@ package com.fpt.StreamGAP.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "comment")
@@ -22,5 +22,5 @@ public class Comment {
     private Song song; // Ensure this is correctly defined
 
     private String content;
-    private LocalDateTime createdAt; // Changed from Date to LocalDateTime
+    private Date createdAt; // Changed from Date to LocalDateTime
 }

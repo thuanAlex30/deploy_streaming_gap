@@ -2,6 +2,7 @@ package com.fpt.StreamGAP.dto;
 
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public class CommentDTO {
@@ -9,6 +10,6 @@ public class CommentDTO {
     private Integer userId;
     private Integer songId;
     private String content;
-    private LocalDateTime createdAt;
+    private Date createdAt;
 }
 

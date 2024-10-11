@@ -3,7 +3,8 @@ package com.fpt.StreamGAP.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
+
 
 @Entity
 @Table(name = "Karaoke_Sessions")

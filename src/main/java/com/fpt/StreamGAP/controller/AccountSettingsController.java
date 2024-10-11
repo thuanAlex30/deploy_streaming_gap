@@ -26,7 +26,8 @@ public class AccountSettingsController {
         List<AccountSettingsDTO> accountSettingsDTOs = accountSettingsList.stream()
                 .map(accountSettings -> {
                     AccountSettingsDTO dto = new AccountSettingsDTO();
-                    dto.setUser_id(accountSettings.getUser_id());
+                    dto.setAccount_settings_id(accountSettings.getAccount_settings_id());
+                    dto.setUser_id(accountSettings.getUser().getUser_id());
                     dto.setPrivacy(accountSettings.getPrivacy());
                     dto.setEmail_notifications(accountSettings.getEmail_notifications());
                     dto.setVolume_level(accountSettings.getVolume_level());
@@ -42,12 +43,13 @@ public class AccountSettingsController {
         return response;
     }
 
-    @GetMapping("/{user_id}")
-    public ResponseEntity<ReqRes> getAccountSettingsById(@PathVariable Integer user_id) {
-        return accountSettingsService.getAccountSettingsById(user_id)
+    @GetMapping("/{account_settings_id}")
+    public ResponseEntity<ReqRes> getAccountSettingsByUserId(@PathVariable Integer account_settings_id) {
+        return accountSettingsService.getAccountSettingsByUserId(account_settings_id)
                 .map(accountSettings -> {
                     AccountSettingsDTO dto = new AccountSettingsDTO();
-                    dto.setUser_id(accountSettings.getUser_id());
+                    dto.setAccount_settings_id(accountSettings.getAccount_settings_id());
+                    dto.setUser_id(accountSettings.getUser().getUser_id());
                     dto.setPrivacy(accountSettings.getPrivacy());
                     dto.setEmail_notifications(accountSettings.getEmail_notifications());
                     dto.setVolume_level(accountSettings.getVolume_level());
@@ -76,10 +78,19 @@ public class AccountSettingsController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        AccountSettings savedAccountSettings = accountSettingsService.saveAccountSettings(accountSettings);
+        Optional<AccountSettings> existingSettings = accountSettingsService.getAccountSettingsByUserId(accountSettings.getUser().getUser_id());
+        if (existingSettings.isPresent()) {
+            ReqRes response = new ReqRes();
+            response.setStatusCode(409);
+            response.setMessage("Account settings already exist for this user");
+            return ResponseEntity.status(409).body(response);
+        }
+
+        AccountSettings savedAccountSettings = accountSettingsService.createAccountSettings(accountSettings);
 
         AccountSettingsDTO dto = new AccountSettingsDTO();
-        dto.setUser_id(savedAccountSettings.getUser_id());
+        dto.setAccount_settings_id(savedAccountSettings.getAccount_settings_id());
+        dto.setUser_id(savedAccountSettings.getUser().getUser_id());
         dto.setPrivacy(savedAccountSettings.getPrivacy());
         dto.setEmail_notifications(savedAccountSettings.getEmail_notifications());
         dto.setVolume_level(savedAccountSettings.getVolume_level());
@@ -92,19 +103,17 @@ public class AccountSettingsController {
         return ResponseEntity.status(201).body(response);
     }
 
-    @PutMapping("/{user_id}")
-    public ResponseEntity<ReqRes> updateAccountSettings(@PathVariable Integer user_id, @RequestBody AccountSettings accountSettings) {
-        return accountSettingsService.getAccountSettingsById(user_id)
-                .map(existingAccountSettings -> {
-                    accountSettings.setUser_id(user_id);
-                    AccountSettings updatedAccountSettings = accountSettingsService.saveAccountSettings(accountSettings);
-
+    @PutMapping("/{account_settings_id}")
+    public ResponseEntity<ReqRes> updateAccountSettings(@PathVariable Integer account_settings_id, @RequestBody AccountSettings accountSettings) {
+        return accountSettingsService.updateAccountSettings(account_settings_id, accountSettings)
+                .map(updatedSettings -> {
                     AccountSettingsDTO dto = new AccountSettingsDTO();
-                    dto.setUser_id(updatedAccountSettings.getUser_id());
-                    dto.setPrivacy(updatedAccountSettings.getPrivacy());
-                    dto.setEmail_notifications(updatedAccountSettings.getEmail_notifications());
-                    dto.setVolume_level(updatedAccountSettings.getVolume_level());
-                    dto.setSleep_timer(updatedAccountSettings.getSleep_timer());
+                    dto.setAccount_settings_id(updatedSettings.getAccount_settings_id());
+                    dto.setUser_id(updatedSettings.getUser().getUser_id());
+                    dto.setPrivacy(updatedSettings.getPrivacy());
+                    dto.setEmail_notifications(updatedSettings.getEmail_notifications());
+                    dto.setVolume_level(updatedSettings.getVolume_level());
+                    dto.setSleep_timer(updatedSettings.getSleep_timer());
 
                     ReqRes response = new ReqRes();
                     response.setStatusCode(200);
@@ -120,14 +129,15 @@ public class AccountSettingsController {
                 });
     }
 
-    @DeleteMapping("/{user_id}")
-    public ResponseEntity<ReqRes> deleteAccountSettings(@PathVariable Integer user_id) {
-        if (accountSettingsService.getAccountSettingsById(user_id).isPresent()) {
-            accountSettingsService.deleteAccountSettings(user_id);
+    @DeleteMapping("/{account_settings_id}")
+    public ResponseEntity<ReqRes> deleteAccountSettings(@PathVariable Integer account_settings_id) {
+        Optional<AccountSettings> existingSettings = accountSettingsService.getAccountSettingsByUserId(account_settings_id);
+        if (existingSettings.isPresent()) {
+            accountSettingsService.deleteAccountSettings(account_settings_id);
             ReqRes response = new ReqRes();
-            response.setStatusCode(204);
+            response.setStatusCode(200);
             response.setMessage("Account settings deleted successfully");
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(response);
         } else {
             ReqRes response = new ReqRes();
             response.setStatusCode(404);
@@ -135,4 +145,5 @@ public class AccountSettingsController {
             return ResponseEntity.status(404).body(response);
         }
     }
+
 }

@@ -22,6 +22,7 @@ public class ReqRes {
     private String expirationTime;
     private String username;
     private String email;
+    private String code;
     private String avatar_url;
     private String login_provider;
     private String provider_id;
@@ -46,9 +47,9 @@ public class ReqRes {
     private List<CommentDTO> commentList;
     private List<PlaylistDTO> playList;
     private List<ChatChannelDTO> chatChannel;
-    private MusicGameDTO musicGame;
     private List<ChatMessageDTO> chatMessageList;
     private List<ArtistDTO> artistList;
+    private List<SongListenStatsDTO> songListenStatsList;
 
     @Getter
     private Song song;

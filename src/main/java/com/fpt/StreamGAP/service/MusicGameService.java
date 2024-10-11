@@ -9,13 +9,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.util.Date;
 @Service
 public class MusicGameService {
 
     @Autowired
     private MusicGameRepository musicGameRepository;
-
 
     public List<MusicGameDTO> getAllMusicGames() {
         return musicGameRepository.findAll().stream()
@@ -23,22 +22,26 @@ public class MusicGameService {
                 .collect(Collectors.toList());
     }
 
-
     public Optional<MusicGameDTO> getMusicGameById(Integer id) {
         return musicGameRepository.findById(id)
                 .map(this::convertToDTO);
     }
 
-
-    public MusicGame saveMusicGame(MusicGame musicGame) {
-        return musicGameRepository.save(musicGame);
+    public Optional<MusicGame> getMusicGameEntityById(Integer id) {
+        return musicGameRepository.findById(id);
     }
 
+    public MusicGame saveMusicGame(MusicGame musicGame) {
+
+        if (musicGame.getPlayed_at() == null) {
+            musicGame.setPlayed_at(new Date());
+        }
+        return musicGameRepository.save(musicGame);
+    }
 
     public void deleteMusicGame(Integer id) {
         musicGameRepository.deleteById(id);
     }
-
 
     public MusicGameDTO convertToDTO(MusicGame musicGame) {
         MusicGameDTO dto = new MusicGameDTO();
@@ -50,4 +53,3 @@ public class MusicGameService {
         return dto;
     }
 }
-

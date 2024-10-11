@@ -10,9 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserManagementService {
@@ -25,11 +23,17 @@ public class UserManagementService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private EmailService emailService;
 
-    public ReqRes register(ReqRes registrationRequest) {
-        ReqRes resp = new ReqRes();
+    private Map<String, User> pendingRegistrations = new HashMap<>();
 
+    public String register(ReqRes registrationRequest) {
         try {
+           if(userRepo.existsByEmail(registrationRequest.getEmail())){
+               return "mail da su dung";
+           }
+
             User user = new User();
             user.setEmail(registrationRequest.getEmail());
             user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
@@ -41,17 +45,32 @@ public class UserManagementService {
             user.setSubscription_type(registrationRequest.getSubscription_type());
             user.setCreated_at(registrationRequest.getCreated_at());
             user.setUpdated_at(registrationRequest.getUpdated_at());
-            User userResult = userRepo.save(user);
-            if (userResult.getUser_id() > 0) {
-                resp.setUser((userResult));
-                resp.setMessage("User Saved Succesfully");
-                resp.setStatusCode(200);
-            }
+
+            String verificationCode = generateVerificationCode();
+            pendingRegistrations.put(verificationCode, user);
+            emailService.sendVerificationEmail(user.getEmail(), "Email Verification", verificationCode);
+
+            return "check code";
         } catch (Exception e) {
-            resp.setStatusCode(500);
-            resp.setError(e.getMessage());
+            return "khong dang ki duoc: " + e.getMessage();
         }
-        return resp;
+    }
+
+    private String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        return String.valueOf(code);
+    }
+
+    public String verifyEmail(String email, String code) {
+        User user = pendingRegistrations.get(code);
+        if (user != null && user.getEmail().equals(email)) {
+            User savedUser = userRepo.save(user);
+            pendingRegistrations.remove(code);
+            return "ddang ki thanh cong";
+        } else {
+            return "khong dang ki thanh cong";
+        }
     }
     public ReqRes  login(ReqRes loginRequest){
         ReqRes response = new ReqRes();
@@ -192,5 +211,6 @@ public class UserManagementService {
         return reqRes;
 
     }
+
 
 }

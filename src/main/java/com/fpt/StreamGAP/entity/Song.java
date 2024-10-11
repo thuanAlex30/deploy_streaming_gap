@@ -23,6 +23,7 @@ public class Song {
     private String audio_file_url;
     private String lyrics;
     private Date created_at;
+    private Integer Listen_count;
     public Integer getSong_id() {
         return song_id;
     }

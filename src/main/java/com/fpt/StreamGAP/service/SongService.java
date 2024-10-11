@@ -83,6 +83,10 @@ public class SongService {
 
     public void deleteSong(Integer songId) {
         Song existingSong = getSongById(songId);
-        songRepository.delete(existingSong);
+        if (existingSong != null) {
+            songRepository.delete(existingSong);
+        } else {
+            throw new RuntimeException("Song not found");
+        }
     }
 }

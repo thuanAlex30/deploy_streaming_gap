@@ -147,17 +147,18 @@ public class SongController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ReqRes> deleteSong(@PathVariable Integer id) {
+        ReqRes response = new ReqRes();
+
         if (songService.getSongById(id) != null) {
             songService.deleteSong(id);
-            ReqRes response = new ReqRes();
-            response.setStatusCode(204);
+            response.setStatusCode(200);
             response.setMessage("Song deleted successfully");
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(200).body(response);
         } else {
-            ReqRes response = new ReqRes();
             response.setStatusCode(404);
             response.setMessage("Song not found");
             return ResponseEntity.status(404).body(response);
         }
     }
+
 }

@@ -2,7 +2,7 @@ package com.fpt.StreamGAP.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "Songs")
@@ -23,6 +23,7 @@ public class Song {
     private String audio_file_url;
     private String lyrics;
     private Date created_at;
+    private Integer Listen_count;
     public Integer getSong_id() {
         return song_id;
     }
@@ -85,12 +86,4 @@ public class Song {
         this.lyrics = lyrics;
     }
 
-    // Getter và Setter cho created_at
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
-    }
 }

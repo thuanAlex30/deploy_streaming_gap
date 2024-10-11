@@ -2,7 +2,7 @@ package com.fpt.StreamGAP.dto;
 
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 public class MusicGameDTO {

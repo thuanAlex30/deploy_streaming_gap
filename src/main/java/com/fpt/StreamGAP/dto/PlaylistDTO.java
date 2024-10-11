@@ -6,7 +6,7 @@ import lombok.Data;
 import com.fpt.StreamGAP.entity.User;
 import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

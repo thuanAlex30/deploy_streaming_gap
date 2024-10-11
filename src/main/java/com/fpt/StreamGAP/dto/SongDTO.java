@@ -3,7 +3,7 @@ package com.fpt.StreamGAP.dto;
 import com.fpt.StreamGAP.entity.Album;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 public class SongDTO {
@@ -15,5 +15,6 @@ public class SongDTO {
     private String audio_file_url;
     private String lyrics;
     private Date created_at;
+    private Integer Listen_count;
 }
 

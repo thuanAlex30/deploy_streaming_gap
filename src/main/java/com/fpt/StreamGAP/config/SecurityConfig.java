@@ -105,6 +105,14 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/favorite-songs/**").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers(HttpMethod.DELETE, "/favorite-songs/**").hasAuthority("ADMIN")
 
+
+                                .requestMatchers("/songsStats/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/songsStats/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/songsStats/**").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/songsStats/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/songsStats/**").hasAuthority("ADMIN")
+
+
                                 .requestMatchers("/comments/**").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers(HttpMethod.DELETE, "/comments/**").hasAuthority("ADMIN")
 

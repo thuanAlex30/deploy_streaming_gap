@@ -3,7 +3,9 @@ package com.fpt.StreamGAP.service;
 import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.entity.Album;
 import com.fpt.StreamGAP.entity.Song;
+import com.fpt.StreamGAP.entity.SongListenStats;
 import com.fpt.StreamGAP.repository.AlbumRepository;
+import com.fpt.StreamGAP.repository.SongListenStatsRepository;
 import com.fpt.StreamGAP.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SongService {
@@ -23,13 +24,34 @@ public class SongService {
     @Autowired
     private AlbumRepository albumRepository;
 
+    @Autowired
+    private SongListenStatsRepository songListenStatsRepository;
+
     public List<Song> getAllSongs() {
         return songRepository.findAll();
     }
+    public void playSong(Integer Id) {
+        Song song = getSongById(Id);
 
-    public Song getSongById(Integer songId) {
-        return songRepository.findById(songId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Song not found"));
+        List<SongListenStats> statsList = songListenStatsRepository.findBySong(song);
+        SongListenStats stats;
+
+        if (statsList.isEmpty()) {
+            stats = new SongListenStats();
+            stats.setSong(song);
+            stats.setListen_count(1);
+        } else {
+            stats = statsList.get(0);
+            stats.setListen_count(stats.getListen_count() + 1);
+        }
+
+        songListenStatsRepository.save(stats);
+    }
+
+    public Song getSongById(Integer id) {
+
+        return songRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Song not found"));
     }
 
     public Song createSong(Song song) {
@@ -43,7 +65,6 @@ public class SongService {
     public Song updateSong(Integer songId, Song songDetails) {
         Song existingSong = getSongById(songId);
 
-        // Update song details
         existingSong.setTitle(songDetails.getTitle());
         existingSong.setGenre(songDetails.getGenre());
         existingSong.setDuration(songDetails.getDuration());
@@ -51,9 +72,7 @@ public class SongService {
         existingSong.setLyrics(songDetails.getLyrics());
         existingSong.setCreated_at(songDetails.getCreated_at());
 
-        // Check if the album exists before updating
         if (songDetails.getAlbum() != null) {
-            // Assuming album has a method to fetch by ID
             Album album = albumRepository.findById(songDetails.getAlbum().getAlbum_id())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Album not found"));
             existingSong.setAlbum(album);

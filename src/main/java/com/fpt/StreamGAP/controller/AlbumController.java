@@ -24,8 +24,6 @@ public class AlbumController {
 
     @Autowired
     private AlbumService albumService;
-    @Autowired
-    private ArtistService artistService;
 
     @GetMapping
     public ReqRes getAllAlbums() {

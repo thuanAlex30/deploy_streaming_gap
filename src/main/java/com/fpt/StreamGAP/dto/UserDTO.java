@@ -11,6 +11,7 @@ public class UserDTO {
     private Integer user_id;
     private String username;
     private String email;
+    private String password;
     private String avatar_url;
     private String login_provider;
     private String provider_id;

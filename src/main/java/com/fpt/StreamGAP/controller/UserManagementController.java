@@ -1,6 +1,7 @@
 package com.fpt.StreamGAP.controller;
 
 import com.fpt.StreamGAP.dto.ReqRes;
+import com.fpt.StreamGAP.dto.UserDTO;
 import com.fpt.StreamGAP.entity.User;
 import com.fpt.StreamGAP.service.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +13,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
+
 @RestController
 public class UserManagementController {
     @Autowired
     private UserManagementService userManagementService;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<ReqRes> regeister(@RequestBody ReqRes reg) {
-        return ResponseEntity.ok(userManagementService.register(reg));
+    public ResponseEntity<String> registerUser(@RequestBody ReqRes userDto){
+        String response = userManagementService.register(userDto);
+        return ResponseEntity.ok(response);
     }
+    @PostMapping("/auth/verify")
+    public ResponseEntity<String> verify(@RequestBody Map<String , String> request){
+        String email = request.get("email");
+        String code = request.get("code");
+        String responseMessage =userManagementService.verifyEmail(email,code);
+        return ResponseEntity.ok(responseMessage);
+    }
+
 
     @PostMapping("/auth/login")
     public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {

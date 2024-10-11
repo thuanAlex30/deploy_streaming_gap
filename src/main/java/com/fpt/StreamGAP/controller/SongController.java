@@ -41,7 +41,7 @@ public class SongController {
         ReqRes response = new ReqRes();
         response.setStatusCode(200);
         response.setMessage("Songs retrieved successfully");
-        response.setSongDtoList(songDTOs); // Correct setter for SongDTO list
+        response.setSongDtoList(songDTOs);
 
         return response;
     }

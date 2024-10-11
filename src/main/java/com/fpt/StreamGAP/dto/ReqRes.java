@@ -22,6 +22,7 @@ public class ReqRes {
     private String expirationTime;
     private String username;
     private String email;
+    private String code;
     private String avatar_url;
     private String login_provider;
     private String provider_id;

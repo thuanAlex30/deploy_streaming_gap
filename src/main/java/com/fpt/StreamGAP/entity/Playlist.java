@@ -3,6 +3,7 @@ package com.fpt.StreamGAP.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "Playlists")
@@ -16,6 +17,10 @@ public class Playlist {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "playlist")
+    private List<PlaylistSong> songs;
+
 
     private String title;
     private Date created_at;

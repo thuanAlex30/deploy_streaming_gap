@@ -17,9 +17,22 @@ public class PlaylistSong {
     @JoinColumn(name = "playlist_id", nullable = false)
     private Playlist playlist;
 
-    @ManyToOne
-    @JoinColumn(name = "song_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "song_id")
     private Song song;
-
     private Date added_at;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User createdBy;
+
+
+
+    public Date getAdded_at() {
+        return added_at;
+    }
+
+    public void setAdded_at(Date added_at) {
+        this.added_at = added_at;
+    }
 }

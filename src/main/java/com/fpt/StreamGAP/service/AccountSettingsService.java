@@ -14,19 +14,35 @@ public class AccountSettingsService {
     @Autowired
     private AccountSettingsRepository accountSettingsRepository;
 
+
     public List<AccountSettings> getAllAccountSettings() {
         return accountSettingsRepository.findAll();
     }
 
-    public Optional<AccountSettings> getAccountSettingsById(Integer user_id) {
-        return accountSettingsRepository.findById(user_id);
+
+    public Optional<AccountSettings> getAccountSettingsByUserId(Integer account_settings_id) {
+        return accountSettingsRepository.findById(account_settings_id);
     }
 
-    public AccountSettings saveAccountSettings(AccountSettings accountSettings) {
+
+    public AccountSettings createAccountSettings(AccountSettings accountSettings) {
         return accountSettingsRepository.save(accountSettings);
     }
 
-    public void deleteAccountSettings(Integer user_id) {
-        accountSettingsRepository.deleteById(user_id);
+
+    public Optional<AccountSettings> updateAccountSettings(Integer account_settings_id, AccountSettings accountSettings) {
+        return accountSettingsRepository.findById(account_settings_id).map(existingSettings -> {
+            existingSettings.setPrivacy(accountSettings.getPrivacy());
+            existingSettings.setEmail_notifications(accountSettings.getEmail_notifications());
+            existingSettings.setVolume_level(accountSettings.getVolume_level());
+            existingSettings.setSleep_timer(accountSettings.getSleep_timer());
+            return accountSettingsRepository.save(existingSettings);
+        });
     }
+
+
+    public void deleteAccountSettings(Integer account_settings_id) {
+        accountSettingsRepository.deleteById(account_settings_id);
+    }
+
 }

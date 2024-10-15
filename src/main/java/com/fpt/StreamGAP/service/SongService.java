@@ -1,6 +1,5 @@
 package com.fpt.StreamGAP.service;
 
-import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.entity.Album;
 import com.fpt.StreamGAP.entity.Song;
 import com.fpt.StreamGAP.entity.SongListenStats;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SongService {
@@ -30,8 +30,10 @@ public class SongService {
     public List<Song> getAllSongs() {
         return songRepository.findAll();
     }
-    public void playSong(Integer Id) {
-        Song song = getSongById(Id);
+
+    public void playSong(Integer id) {
+        Song song = getSongById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Song not found"));
 
         List<SongListenStats> statsList = songListenStatsRepository.findBySong(song);
         SongListenStats stats;
@@ -48,10 +50,8 @@ public class SongService {
         songListenStatsRepository.save(stats);
     }
 
-    public Song getSongById(Integer id) {
-
-        return songRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Song not found"));
+    public Optional<Song> getSongById(Integer id) {
+        return songRepository.findById(id);
     }
 
     public Song createSong(Song song) {
@@ -63,14 +63,19 @@ public class SongService {
     }
 
     public Song updateSong(Integer songId, Song songDetails) {
-        Song existingSong = getSongById(songId);
+        if (songDetails == null) {
+            throw new IllegalArgumentException("Song details cannot be null");
+        }
 
-        existingSong.setTitle(songDetails.getTitle());
-        existingSong.setGenre(songDetails.getGenre());
-        existingSong.setDuration(songDetails.getDuration());
-        existingSong.setAudio_file_url(songDetails.getAudio_file_url());
-        existingSong.setLyrics(songDetails.getLyrics());
-        existingSong.setCreated_at(songDetails.getCreated_at());
+        Song existingSong = getSongById(songId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Song not found"));
+
+        existingSong.setTitle(songDetails.getTitle() != null ? songDetails.getTitle() : existingSong.getTitle());
+        existingSong.setGenre(songDetails.getGenre() != null ? songDetails.getGenre() : existingSong.getGenre());
+        existingSong.setDuration(songDetails.getDuration() != null ? songDetails.getDuration() : existingSong.getDuration());
+        existingSong.setAudio_file_url(songDetails.getAudio_file_url() != null ? songDetails.getAudio_file_url() : existingSong.getAudio_file_url());
+        existingSong.setLyrics(songDetails.getLyrics() != null ? songDetails.getLyrics() : existingSong.getLyrics());
+        existingSong.setCreated_at(songDetails.getCreated_at() != null ? songDetails.getCreated_at() : existingSong.getCreated_at());
 
         if (songDetails.getAlbum() != null) {
             Album album = albumRepository.findById(songDetails.getAlbum().getAlbum_id())
@@ -82,11 +87,8 @@ public class SongService {
     }
 
     public void deleteSong(Integer songId) {
-        Song existingSong = getSongById(songId);
-        if (existingSong != null) {
-            songRepository.delete(existingSong);
-        } else {
-            throw new RuntimeException("Song not found");
-        }
+        Song existingSong = getSongById(songId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Song not found"));
+        songRepository.delete(existingSong);
     }
 }

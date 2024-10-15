@@ -76,7 +76,7 @@ public class UserManagementService {
         ReqRes response = new ReqRes();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
-            var user =userRepo.findByusername(loginRequest.getUsername()).orElseThrow();
+            var user =userRepo.findByUsername(loginRequest.getUsername()).orElseThrow();
             var jwt=jwtUtils.generateRefreshToken(new HashMap<>(),user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             response.setStatusCode(200);
@@ -95,7 +95,7 @@ public class UserManagementService {
         ReqRes response = new ReqRes();
         try{
             String ourEmail = jwtUtils.extractUsername(refreshTokenReqiest.getToken());
-            User user=userRepo.findByusername(ourEmail).orElseThrow();
+            User user=userRepo.findByUsername(ourEmail).orElseThrow();
             if(jwtUtils.isTokenValid(refreshTokenReqiest.getToken(),user)){
                 var jwt=jwtUtils.generateToken(user);
                 response.setStatusCode(200);
@@ -131,19 +131,7 @@ public class UserManagementService {
             return reqRes;
         }
     }
-    public ReqRes getUsersById(Integer id) {
-        ReqRes reqRes = new ReqRes();
-        try {
-            User userbyID= userRepo.findById(id).orElseThrow(()->new RuntimeException("User Not Found"));
-            reqRes.setUser(userbyID);
-            reqRes.setStatusCode(200);
-            reqRes.setMessage("Users with id '" + id + "' found successfully");
-        }catch (Exception e){
-            reqRes.setStatusCode(500);
-            reqRes.setMessage("Error occurred: " + e.getMessage());
-        }
-        return reqRes;
-    }
+
     public ReqRes deleteUser(Integer userId) {
         ReqRes reqRes = new ReqRes();
         try {
@@ -194,7 +182,7 @@ public class UserManagementService {
     public ReqRes getMyInfo(String username){
         ReqRes reqRes = new ReqRes();
         try {
-            Optional<User> userOptional = userRepo.findByusername(username);
+            Optional<User> userOptional = userRepo.findByUsername(username);
             if (userOptional.isPresent()) {
                 reqRes.setUser(userOptional.get());
                 reqRes.setStatusCode(200);
@@ -211,6 +199,13 @@ public class UserManagementService {
         return reqRes;
 
     }
+    public Optional<User> getUsersByIdC(Integer id) {
+        return userRepo.findById(id);
+    }
+    public Optional<Integer> getUsersById(Integer id) {
+        return userRepo.findById(id).map(User::getUser_id);
+    }
+
 
 
 }

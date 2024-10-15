@@ -1,3 +1,4 @@
+
 package com.fpt.StreamGAP.entity;
 
 import jakarta.persistence.*;
@@ -20,4 +21,12 @@ public class AccountSettings {
     private Boolean email_notifications = true;
     private Integer volume_level = 50;
     private Integer sleep_timer;
+
+    public void setVolume_level(Integer volume_level) {
+        if (volume_level != null && volume_level > 100) {
+            this.volume_level = 100;
+        } else {
+            this.volume_level = volume_level;
+        }
+    }
 }

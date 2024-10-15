@@ -46,10 +46,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/songs/**").hasAuthority("ADMIN")
 
                                 .requestMatchers("/account-settings/**").hasAnyAuthority("ADMIN", "USER")
-                                .requestMatchers(HttpMethod.POST, "/account-settings/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/account-settings/**").hasAnyAuthority("ADMIN", "USER")
-                                .requestMatchers(HttpMethod.PUT, "/account-settings/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/account-settings/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/account-settings/**").hasAuthority("USER")
+                                .requestMatchers(HttpMethod.GET, "/account-settings/").hasAnyAuthority("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/account-settings/**").hasAuthority("USER")
+                                .requestMatchers(HttpMethod.DELETE, "/account-settings/**").hasAuthority("USER")
 
 
                                 .requestMatchers("/albums/**").hasAnyAuthority("ADMIN", "USER")

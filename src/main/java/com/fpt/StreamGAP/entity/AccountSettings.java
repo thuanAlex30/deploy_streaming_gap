@@ -1,4 +1,3 @@
-
 package com.fpt.StreamGAP.entity;
 
 import jakarta.persistence.*;

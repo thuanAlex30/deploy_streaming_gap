@@ -1,12 +1,14 @@
 package com.fpt.StreamGAP.dto;
 
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fpt.StreamGAP.entity.Playlist;
 import com.fpt.StreamGAP.entity.Song;
+import com.fpt.StreamGAP.entity.User;
 import lombok.Data;
+import lombok.Getter;
 
-import java.util.Date;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,5 +16,22 @@ import java.util.Date;
 public class PlaylistSongDTO {
     private Integer id;
     private Song song;
-    private Date added_at;
+    @Getter
+    private PlaylistDTO playlist;
+    private UserDTO user;
+
+
+
+    public void setPlaylist(PlaylistDTO playlist) {
+        this.playlist = playlist;
+    }
+
+    public Song getSong() {
+        return song;
+    }
+
+    public void setSong(Song song) {
+        this.song = song;
+    }
+
 }

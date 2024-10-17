@@ -54,7 +54,7 @@ public class PlaylistSongService {
     @Transactional
     public PlaylistSong savePlaylistSong(PlaylistSong playlistSong) {
         Song song = playlistSong.getSong();
-        if (song != null && song.getSong_id() == null) {
+        if (song != null && song.getSongId() == null) {
             song = songRepository.save(song);
             playlistSong.setSong(song);
         }

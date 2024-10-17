@@ -85,7 +85,7 @@ public class PlaylistSongController {
             throw new IllegalArgumentException("Playlist ID cannot be null when creating a PlaylistSong.");
         }
 
-        if (playlistSongDTO.getSong() == null || playlistSongDTO.getSong().getSong_id() == null) {
+        if (playlistSongDTO.getSong() == null || playlistSongDTO.getSong().getSongId() == null) {
             throw new IllegalArgumentException("Song ID cannot be null when creating a PlaylistSong.");
         }
         Playlist playlist = playlistService.getPlaylistById(playlistSongDTO.getPlaylist().getPlaylist_id())
@@ -100,7 +100,7 @@ public class PlaylistSongController {
         User user = new User();
         user.setUser_id(userIdFromService);
         playlistSong.setCreatedBy(user);
-        Song song = songService.getSongById(playlistSongDTO.getSong().getSong_id())
+        Song song = songService.getSongByIdForCurrentUser(playlistSongDTO.getSong().getSongId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Song ID"));
         playlistSong.setSong(song);
 

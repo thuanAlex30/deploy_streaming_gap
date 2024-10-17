@@ -33,7 +33,7 @@ public class SongListenStatsController {
                 .map(stats -> {
                     SongListenStatsDTO dto = new SongListenStatsDTO();
                     dto.setListen_id(stats.getListen_id());
-                    dto.setSongId(stats.getSong().getSong_id());
+                    dto.setSongId(stats.getSong().getSongId());
                     dto.setTitle(stats.getSong().getTitle());
                     dto.setGenre(stats.getSong().getGenre());
                     dto.setListenCount(stats.getListen_count());
@@ -58,7 +58,7 @@ public class SongListenStatsController {
         }
         SongListenStatsDTO dto = new SongListenStatsDTO();
         dto.setListen_id(stats.getListen_id());
-        dto.setSongId(stats.getSong().getSong_id());
+        dto.setSongId(stats.getSong().getSongId());
         dto.setTitle(stats.getSong().getTitle());
         dto.setGenre(stats.getSong().getGenre());
         dto.setListenCount(stats.getListen_count());

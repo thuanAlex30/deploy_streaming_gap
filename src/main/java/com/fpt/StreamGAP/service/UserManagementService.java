@@ -206,6 +206,8 @@ public class UserManagementService {
         return userRepo.findById(id).map(User::getUser_id);
     }
 
-
+    public Optional<User> getUserByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
 
 }

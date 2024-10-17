@@ -2,7 +2,7 @@ package com.fpt.StreamGAP.dto;
 
 public class StatisticsDTO {
     private String label;
-    private long count;
+    private Integer count;
 
     // Getters and setters
     public String getLabel() {
@@ -13,11 +13,11 @@ public class StatisticsDTO {
         this.label = label;
     }
 
-    public long getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public void setCount(int count) {
         this.count = count;
     }
 }

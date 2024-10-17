@@ -85,6 +85,7 @@ public class SecurityConfig {
 
                                 .requestMatchers("/partymodes/**").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers(HttpMethod.POST, "/partymodes/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/partymodes/**").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers(HttpMethod.PUT, "/partymodes/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/partymodes/**").hasAuthority("ADMIN")
 

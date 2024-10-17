@@ -27,7 +27,6 @@ public class PlaylistSong {
     private User createdBy;
 
 
-
     public Date getAdded_at() {
         return added_at;
     }

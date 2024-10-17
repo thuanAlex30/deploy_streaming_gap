@@ -3,6 +3,7 @@ package com.fpt.StreamGAP.controller;
 import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.dto.UserDTO;
 import com.fpt.StreamGAP.entity.User;
+import com.fpt.StreamGAP.repository.UserRepo;
 import com.fpt.StreamGAP.service.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
 public class UserManagementController {
     @Autowired
     private UserManagementService userManagementService;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @PostMapping("/auth/register")
     public ResponseEntity<String> registerUser(@RequestBody ReqRes userDto){
@@ -50,10 +55,27 @@ public class UserManagementController {
         return ResponseEntity.ok(userManagementService.getAllUsers());
     }
 
+
     @GetMapping("/admin/get-users/{userId}")
     public ResponseEntity<ReqRes> getUSerByID(@PathVariable Integer userId) {
-        return ResponseEntity.ok(userManagementService.getUsersById(userId));
+        ReqRes response = new ReqRes();
+
+        try {
+            User user = userManagementService.getUsersByIdC(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+            response.setUser(user);
+            response.setStatusCode(200);
+            response.setMessage("User found successfully");
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(404).body(response);
+        }
     }
+
 
     @PutMapping("/admin/update/{userId}")
     public ResponseEntity<ReqRes> updateUser(@PathVariable Integer userId, @RequestBody User reqres) {
@@ -71,5 +93,6 @@ public class UserManagementController {
     public ResponseEntity<ReqRes> deleteUSer(@PathVariable Integer userId){
         return ResponseEntity.ok(userManagementService.deleteUser(userId));
     }
+
 
 }

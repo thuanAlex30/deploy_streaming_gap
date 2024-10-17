@@ -2,15 +2,16 @@ package com.fpt.StreamGAP.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "Favorite_Songs")
 @Data
 public class FavoriteSong {
 
-    @EmbeddedId
-    private FavoriteSongId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private FavoriteSongId F_id;
 
     @ManyToOne
     @MapsId("userId")

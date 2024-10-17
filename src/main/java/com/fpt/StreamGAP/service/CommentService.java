@@ -70,7 +70,7 @@ public class CommentService {
         CommentDTO dto = new CommentDTO();
         dto.setCommentId(comment.getComment_id());
         dto.setUserId(comment.getUser().getUser_id());
-        dto.setSongId(comment.getSong().getSong_id());
+        dto.setSongId(comment.getSong().getSongId());
         dto.setContent(comment.getContent());
         dto.setCreatedAt(comment.getCreatedAt());
         return dto;

@@ -56,7 +56,7 @@ public class KaraokeSessionService {
         KaraokeSessionDTO dto = new KaraokeSessionDTO();
         dto.setSessionId(session.getSession_id());
         dto.setUserId(session.getUser().getUser_id());
-        dto.setSongId(session.getSong().getSong_id());
+        dto.setSongId(session.getSong().getSongId());
         dto.setRecordingUrl(session.getRecording_url());
         dto.setCreatedAt(session.getCreated_at());
         return dto;

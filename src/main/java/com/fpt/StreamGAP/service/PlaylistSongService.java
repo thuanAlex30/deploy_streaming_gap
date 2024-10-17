@@ -59,7 +59,7 @@ public class PlaylistSongService {
             playlistSong.setSong(song);
         }
 
-        Optional<Playlist> playlistOpt = playlistRepository.findById(playlistSong.getPlaylist().getPlaylist_id());
+        Optional<Playlist> playlistOpt = playlistRepository.findById(playlistSong.getPlaylist().getPlaylistId());
         if (playlistOpt.isPresent()) {
             playlistSong.setPlaylist(playlistOpt.get());
         } else {

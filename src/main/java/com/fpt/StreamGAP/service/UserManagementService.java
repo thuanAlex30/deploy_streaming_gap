@@ -30,9 +30,9 @@ public class UserManagementService {
 
     public String register(ReqRes registrationRequest) {
         try {
-           if(userRepo.existsByEmail(registrationRequest.getEmail())){
-               return "mail da su dung";
-           }
+            if(userRepo.existsByEmail(registrationRequest.getEmail())){
+                return "mail da su dung";
+            }
 
             User user = new User();
             user.setEmail(registrationRequest.getEmail());

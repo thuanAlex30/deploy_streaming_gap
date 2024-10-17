@@ -199,6 +199,11 @@ public class UserManagementService {
         return reqRes;
 
     }
+    public Optional<Integer> getUserIdByUsername(String username) {
+        return userRepo.findByUsername(username)
+                .map(User::getUser_id);
+    }
+
     public Optional<User> getUsersByIdC(Integer id) {
         return userRepo.findById(id);
     }

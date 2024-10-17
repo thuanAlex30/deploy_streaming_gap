@@ -9,9 +9,8 @@ import java.util.Date;
 @Data
 public class FavoriteSong {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private FavoriteSongId F_id;
+    @EmbeddedId
+    private FavoriteSongId f_id;
 
     @ManyToOne
     @MapsId("userId")
@@ -20,8 +19,24 @@ public class FavoriteSong {
 
     @ManyToOne
     @MapsId("songId")
-    @JoinColumn(name = "song_id")
+    @JoinColumn(name = "song_id", referencedColumnName = "song_id", insertable = false, updatable = false)
     private Song song;
 
     private Date markedAt;
+
+    // Constructor to set userId and songId
+    public FavoriteSong(int userId, int songId) {
+        this.f_id = new FavoriteSongId(userId, songId);
+        this.markedAt = new Date(); // Set marked time to current time
+    }
+
+    // Constructor accepting FavoriteSongId
+    public FavoriteSong(FavoriteSongId favoriteSongId) {
+        this.f_id = favoriteSongId;
+        this.markedAt = new Date(); // Set marked time to current time
+    }
+
+    public FavoriteSong() {
+        // Default constructor
+    }
 }

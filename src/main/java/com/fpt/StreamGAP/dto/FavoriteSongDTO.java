@@ -12,6 +12,14 @@ public class FavoriteSongDTO {
     private Integer songId;
     private Date markedAt;
 
+    public Integer getSongId() {
+        return songId;
+    }
+
+    public void setSongId(Integer songId) {
+        this.songId = songId;
+    }
+
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)

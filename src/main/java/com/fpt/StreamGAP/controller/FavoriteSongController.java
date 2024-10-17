@@ -4,12 +4,23 @@ import com.fpt.StreamGAP.dto.FavoriteSongDTO;
 import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.entity.FavoriteSong;
 import com.fpt.StreamGAP.entity.FavoriteSongId;
+import com.fpt.StreamGAP.entity.Song;
+import com.fpt.StreamGAP.entity.User;
+import com.fpt.StreamGAP.repository.SongRepository;
+import com.fpt.StreamGAP.repository.UserRepo;
 import com.fpt.StreamGAP.service.FavoriteSongService;
+import com.fpt.StreamGAP.service.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -18,6 +29,12 @@ public class FavoriteSongController {
 
     @Autowired
     private FavoriteSongService favoriteSongService;
+
+    @Autowired
+    private UserManagementService userManagementService;
+
+    @Autowired
+    private SongRepository songRepository;
 
     @GetMapping
     public ReqRes getAllFavoriteSongs() {
@@ -68,20 +85,26 @@ public class FavoriteSongController {
     }
 
     @PostMapping
-    public ReqRes createFavoriteSong(@RequestBody FavoriteSong favoriteSong) {
-        FavoriteSong savedFavoriteSong = favoriteSongService.saveFavoriteSong(favoriteSong);
+    public ResponseEntity<ReqRes> createFavoriteSong(@RequestBody FavoriteSongDTO favoriteSongDTO) {
+        // Save the favorite song using the service
+        FavoriteSong savedFavoriteSong = favoriteSongService.createFavori(favoriteSongDTO);
 
-        FavoriteSongDTO dto = new FavoriteSongDTO();
-        dto.setUserId(savedFavoriteSong.getF_id().getUserId());
-        dto.setSongId(savedFavoriteSong.getF_id().getSongId());
-        dto.setMarkedAt(savedFavoriteSong.getMarkedAt());
+        // Prepare the response DTO
+        FavoriteSongDTO responseDTO = new FavoriteSongDTO();
+        responseDTO.setUserId(savedFavoriteSong.getUser().getUser_id());
+        responseDTO.setSongId(savedFavoriteSong.getSong().getSongId());
+        responseDTO.setMarkedAt(savedFavoriteSong.getMarkedAt());
 
+        // Prepare the response
         ReqRes response = new ReqRes();
         response.setStatusCode(201);
         response.setMessage("Favorite song created successfully");
-        response.setFavoriteSongList(List.of(dto));
-        return response;
+        response.setFavoriteSongList(List.of(responseDTO));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
 
 
     @DeleteMapping("/delete/{userId}/{songId}")

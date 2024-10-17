@@ -64,29 +64,23 @@ public class FavoriteSongService {
     @Transactional
     public FavoriteSong createFavori(FavoriteSongDTO favoriteSongDTO) {
         try {
-            // Get the current username of the logged-in user
             String currentUsername = getCurrentUsername();
             if (currentUsername == null) {
                 throw new RuntimeException("User not authenticated");
             }
 
-            // Fetch the user by their username to get the user_id
             User currentUser = getUserByUsername(currentUsername);
-            int userId = currentUser.getUser_id(); // Assuming userId is an integer
+            int userId = currentUser.getUser_id();
 
-            // Fetch the song by its songId from the DTO
             Song song = getSongById(favoriteSongDTO.getSongId());
             if (song == null) {
                 throw new RuntimeException("Song not found");
             }
 
-            // Create the FavoriteSong object and set userId and songId
-            FavoriteSong favoriteSong = new FavoriteSong(new FavoriteSongId(userId, favoriteSongDTO.getSongId())); // Assuming a composite key
+            FavoriteSong favoriteSong = new FavoriteSong(new FavoriteSongId(userId, favoriteSongDTO.getSongId()));
             favoriteSong.setSong(song);
             favoriteSong.setUser(currentUser);
-            favoriteSong.setMarkedAt(new Date()); // Set the current time
-
-            // Save the favorite song in the repository
+            favoriteSong.setMarkedAt(new Date());
             return favoriteSongRepository.save(favoriteSong);
         } catch (Exception e) {
             throw new RuntimeException("Error saving favorite song: " + e.getMessage(), e);
@@ -98,8 +92,6 @@ public class FavoriteSongService {
 
     public void deleteFavoriteSong(int userId, int songId) {
         FavoriteSongId favoriteSongId = new FavoriteSongId(userId, songId);
-
-        // Check if the favorite song exists before deleting
         if (favoriteSongRepository.existsById(favoriteSongId)) {
             favoriteSongRepository.deleteById(favoriteSongId);
         } else {

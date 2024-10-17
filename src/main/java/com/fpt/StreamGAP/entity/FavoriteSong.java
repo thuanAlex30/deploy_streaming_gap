@@ -23,20 +23,15 @@ public class FavoriteSong {
     private Song song;
 
     private Date markedAt;
-
-    // Constructor to set userId and songId
     public FavoriteSong(int userId, int songId) {
         this.f_id = new FavoriteSongId(userId, songId);
-        this.markedAt = new Date(); // Set marked time to current time
+        this.markedAt = new Date();
     }
-
-    // Constructor accepting FavoriteSongId
     public FavoriteSong(FavoriteSongId favoriteSongId) {
         this.f_id = favoriteSongId;
-        this.markedAt = new Date(); // Set marked time to current time
+        this.markedAt = new Date();
     }
 
     public FavoriteSong() {
-        // Default constructor
     }
 }

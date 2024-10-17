@@ -30,12 +30,6 @@ public class FavoriteSongController {
     @Autowired
     private FavoriteSongService favoriteSongService;
 
-    @Autowired
-    private UserManagementService userManagementService;
-
-    @Autowired
-    private SongRepository songRepository;
-
     @GetMapping
     public ReqRes getAllFavoriteSongs() {
         List<FavoriteSong> favoriteSongs = favoriteSongService.getAllFavoriteSongsForCurrentUser();
@@ -86,16 +80,13 @@ public class FavoriteSongController {
 
     @PostMapping
     public ResponseEntity<ReqRes> createFavoriteSong(@RequestBody FavoriteSongDTO favoriteSongDTO) {
-        // Save the favorite song using the service
         FavoriteSong savedFavoriteSong = favoriteSongService.createFavori(favoriteSongDTO);
 
-        // Prepare the response DTO
         FavoriteSongDTO responseDTO = new FavoriteSongDTO();
         responseDTO.setUserId(savedFavoriteSong.getUser().getUser_id());
         responseDTO.setSongId(savedFavoriteSong.getSong().getSongId());
         responseDTO.setMarkedAt(savedFavoriteSong.getMarkedAt());
 
-        // Prepare the response
         ReqRes response = new ReqRes();
         response.setStatusCode(201);
         response.setMessage("Favorite song created successfully");

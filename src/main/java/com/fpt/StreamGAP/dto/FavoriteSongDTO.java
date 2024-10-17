@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fpt.StreamGAP.entity.Song;
 import lombok.Data;
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 public class FavoriteSongDTO {
@@ -19,6 +19,5 @@ public class FavoriteSongDTO {
         private Integer id;
         private Song song;
         private java.util.Date added_at;
-//        private User user; // Thêm thông tin người dùng
     }
 }

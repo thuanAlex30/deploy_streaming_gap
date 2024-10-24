@@ -3,9 +3,15 @@ package com.fpt.StreamGAP.controller;
 import com.fpt.StreamGAP.dto.AccountSettingsDTO;
 import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.entity.AccountSettings;
+import com.fpt.StreamGAP.entity.User;
+import com.fpt.StreamGAP.repository.AccountSettingsRepository;
+import com.fpt.StreamGAP.repository.UserRepo;
 import com.fpt.StreamGAP.service.AccountSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +25,29 @@ public class AccountSettingsController {
     @Autowired
     private AccountSettingsService accountSettingsService;
 
+    @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private AccountSettingsRepository accountSettingsRepository;
+
+    // Phương thức để lấy tên người dùng hiện tại
+    private String getCurrentUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+        return null;
+    }
+
+
     @GetMapping
     public ReqRes getAllAccountSettings() {
+        String currentUsername = getCurrentUsername();
         List<AccountSettings> accountSettingsList = accountSettingsService.getAllAccountSettings();
 
         List<AccountSettingsDTO> accountSettingsDTOs = accountSettingsList.stream()
+                .filter(accountSettings -> accountSettings.getUser().getUsername().equals(currentUsername))
                 .map(accountSettings -> {
                     AccountSettingsDTO dto = new AccountSettingsDTO();
                     dto.setAccount_settings_id(accountSettings.getAccount_settings_id());
@@ -43,42 +67,32 @@ public class AccountSettingsController {
         return response;
     }
 
-    @GetMapping("/{account_settings_id}")
-    public ResponseEntity<ReqRes> getAccountSettingsByUserId(@PathVariable Integer account_settings_id) {
-        return accountSettingsService.getAccountSettingsByUserId(account_settings_id)
-                .map(accountSettings -> {
-                    AccountSettingsDTO dto = new AccountSettingsDTO();
-                    dto.setAccount_settings_id(accountSettings.getAccount_settings_id());
-                    dto.setUser_id(accountSettings.getUser().getUser_id());
-                    dto.setPrivacy(accountSettings.getPrivacy());
-                    dto.setEmail_notifications(accountSettings.getEmail_notifications());
-                    dto.setVolume_level(accountSettings.getVolume_level());
-                    dto.setSleep_timer(accountSettings.getSleep_timer());
-
-                    ReqRes response = new ReqRes();
-                    response.setStatusCode(200);
-                    response.setMessage("Account settings retrieved successfully");
-                    response.setAccountSettingsList(List.of(dto));
-                    return ResponseEntity.ok(response);
-                })
-                .orElseGet(() -> {
-                    ReqRes response = new ReqRes();
-                    response.setStatusCode(404);
-                    response.setMessage("Account settings not found");
-                    return ResponseEntity.status(404).body(response);
-                });
-    }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<ReqRes> createAccountSettings(@RequestBody AccountSettings accountSettings) {
-        if (accountSettings.getUser() == null) {
+        String currentUsername = getCurrentUsername(); // Lấy tên người dùng hiện tại
+
+        if (currentUsername == null) {
             ReqRes response = new ReqRes();
-            response.setStatusCode(400);
-            response.setMessage("User cannot be null");
-            return ResponseEntity.badRequest().body(response);
+            response.setStatusCode(401);
+            response.setMessage("User not authenticated");
+            return ResponseEntity.status(401).body(response);
         }
 
-        Optional<AccountSettings> existingSettings = accountSettingsService.getAccountSettingsByUserId(accountSettings.getUser().getUser_id());
+        // Lấy user từ userRepo bằng tên người dùng hiện tại
+        Optional<User> userOptional = userRepo.findByUsername(currentUsername);
+        if (userOptional.isEmpty()) {
+            ReqRes response = new ReqRes();
+            response.setStatusCode(404);
+            response.setMessage("User not found");
+            return ResponseEntity.status(404).body(response);
+        }
+
+        User user = userOptional.get();
+        accountSettings.setUser(user);
+
+        Optional<AccountSettings> existingSettings = accountSettingsService.getAccountSettingsByUserId(user.getUser_id());
         if (existingSettings.isPresent()) {
             ReqRes response = new ReqRes();
             response.setStatusCode(409);
@@ -103,37 +117,58 @@ public class AccountSettingsController {
         return ResponseEntity.status(201).body(response);
     }
 
-    @PutMapping("/{account_settings_id}")
-    public ResponseEntity<ReqRes> updateAccountSettings(@PathVariable Integer account_settings_id, @RequestBody AccountSettings accountSettings) {
-        return accountSettingsService.updateAccountSettings(account_settings_id, accountSettings)
-                .map(updatedSettings -> {
-                    AccountSettingsDTO dto = new AccountSettingsDTO();
-                    dto.setAccount_settings_id(updatedSettings.getAccount_settings_id());
-                    dto.setUser_id(updatedSettings.getUser().getUser_id());
-                    dto.setPrivacy(updatedSettings.getPrivacy());
-                    dto.setEmail_notifications(updatedSettings.getEmail_notifications());
-                    dto.setVolume_level(updatedSettings.getVolume_level());
-                    dto.setSleep_timer(updatedSettings.getSleep_timer());
+    @PutMapping
+    @Transactional
+    public ResponseEntity<ReqRes> updateAccountSettings(@RequestBody AccountSettings accountSettings) {
+        String currentUsername = getCurrentUsername();
+        Optional<AccountSettings> existingSettings = accountSettingsService.getAllAccountSettings().stream()
+                .filter(settings -> settings.getUser().getUsername().equals(currentUsername))
+                .findFirst();
 
-                    ReqRes response = new ReqRes();
-                    response.setStatusCode(200);
-                    response.setMessage("Account settings updated successfully");
-                    response.setAccountSettingsList(List.of(dto));
-                    return ResponseEntity.ok(response);
-                })
-                .orElseGet(() -> {
-                    ReqRes response = new ReqRes();
-                    response.setStatusCode(404);
-                    response.setMessage("Account settings not found");
-                    return ResponseEntity.status(404).body(response);
-                });
+        if (existingSettings.isPresent()) {
+            Integer accountSettingsId = existingSettings.get().getAccount_settings_id();
+            return accountSettingsService.updateAccountSettings(accountSettingsId, accountSettings)
+                    .map(updatedSettings -> {
+                        AccountSettingsDTO dto = new AccountSettingsDTO();
+                        dto.setAccount_settings_id(updatedSettings.getAccount_settings_id());
+                        dto.setUser_id(updatedSettings.getUser().getUser_id());
+                        dto.setPrivacy(updatedSettings.getPrivacy());
+                        dto.setEmail_notifications(updatedSettings.getEmail_notifications());
+                        dto.setVolume_level(updatedSettings.getVolume_level());
+                        dto.setSleep_timer(updatedSettings.getSleep_timer());
+
+                        ReqRes response = new ReqRes();
+                        response.setStatusCode(200);
+                        response.setMessage("Account settings updated successfully");
+                        response.setAccountSettingsList(List.of(dto));
+                        return ResponseEntity.ok(response);
+                    })
+                    .orElseGet(() -> {
+                        ReqRes response = new ReqRes();
+                        response.setStatusCode(404);
+                        response.setMessage("Account settings not found or you are not authorized to update these settings");
+                        return ResponseEntity.status(404).body(response);
+                    });
+        } else {
+            ReqRes response = new ReqRes();
+            response.setStatusCode(404);
+            response.setMessage("Account settings not found or you are not authorized to update these settings");
+            return ResponseEntity.status(404).body(response);
+        }
     }
 
-    @DeleteMapping("/{account_settings_id}")
-    public ResponseEntity<ReqRes> deleteAccountSettings(@PathVariable Integer account_settings_id) {
-        Optional<AccountSettings> existingSettings = accountSettingsService.getAccountSettingsByUserId(account_settings_id);
+
+
+    @DeleteMapping
+    @Transactional
+    public ResponseEntity<ReqRes> deleteAccountSettings() {
+        String currentUsername = getCurrentUsername();
+        Optional<AccountSettings> existingSettings = accountSettingsService.getAllAccountSettings().stream()
+                .filter(settings -> settings.getUser().getUsername().equals(currentUsername))
+                .findFirst();
+
         if (existingSettings.isPresent()) {
-            accountSettingsService.deleteAccountSettings(account_settings_id);
+            accountSettingsService.deleteAccountSettings(existingSettings.get().getAccount_settings_id());
             ReqRes response = new ReqRes();
             response.setStatusCode(200);
             response.setMessage("Account settings deleted successfully");
@@ -141,9 +176,10 @@ public class AccountSettingsController {
         } else {
             ReqRes response = new ReqRes();
             response.setStatusCode(404);
-            response.setMessage("Account settings not found");
+            response.setMessage("Account settings not found or you are not authorized to delete these settings");
             return ResponseEntity.status(404).body(response);
         }
     }
+
 
 }

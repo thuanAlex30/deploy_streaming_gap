@@ -50,6 +50,11 @@ public class ReqRes {
     private List<ChatMessageDTO> chatMessageList;
     private List<ArtistDTO> artistList;
     private List<SongListenStatsDTO> songListenStatsList;
+<<<<<<< HEAD
+    private List<SongTitleDTO> songListtt;
+=======
+    private List<MessageDTO> messages;
+>>>>>>> e9965b7d59252be6e7e7e75e132212719389d189
 
     @Getter
     private Song song;
@@ -74,4 +79,12 @@ public class ReqRes {
         this.songDtoList = songDtoList;
     }
 
+
+    public List<SongTitleDTO> getSongListtt() { // Getter for songListtt
+        return songListtt;
+    }
+
+    public void setSongListtt(List<SongTitleDTO> songListtt) { // Setter for songListtt
+        this.songListtt = songListtt;
+    }
 }

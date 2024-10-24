@@ -81,14 +81,14 @@ public class PlaylistSongController {
 
     @PostMapping
     public ResponseEntity<PlaylistSong> createPlaylistSong(@RequestBody PlaylistSongDTO playlistSongDTO) {
-        if (playlistSongDTO.getPlaylist() == null || playlistSongDTO.getPlaylist().getPlaylist_id() == null) {
+        if (playlistSongDTO.getPlaylist() == null || playlistSongDTO.getPlaylist().getPlaylistId() == null) {
             throw new IllegalArgumentException("Playlist ID cannot be null when creating a PlaylistSong.");
         }
 
-        if (playlistSongDTO.getSong() == null || playlistSongDTO.getSong().getSong_id() == null) {
+        if (playlistSongDTO.getSong() == null || playlistSongDTO.getSong().getSongId() == null) {
             throw new IllegalArgumentException("Song ID cannot be null when creating a PlaylistSong.");
         }
-        Playlist playlist = playlistService.getPlaylistById(playlistSongDTO.getPlaylist().getPlaylist_id())
+        Playlist playlist = playlistService.getPlaylistsByIdForCurrentUser(playlistSongDTO.getPlaylist().getPlaylistId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Playlist ID"));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User loggedInUser = (User) authentication.getPrincipal();
@@ -100,7 +100,7 @@ public class PlaylistSongController {
         User user = new User();
         user.setUser_id(userIdFromService);
         playlistSong.setCreatedBy(user);
-        Song song = songService.getSongById(playlistSongDTO.getSong().getSong_id())
+        Song song = songService.getSongByIdForCurrentUser(playlistSongDTO.getSong().getSongId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Song ID"));
         playlistSong.setSong(song);
 
@@ -152,3 +152,4 @@ public class PlaylistSongController {
         }
     }
 }
+

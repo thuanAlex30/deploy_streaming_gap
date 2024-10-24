@@ -15,6 +15,6 @@ public class SongDTO {
     private String audio_file_url;
     private String lyrics;
     private Date created_at;
-    private Integer Listen_count;
+    private Integer listen_count;
 }
 

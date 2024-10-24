@@ -11,10 +11,13 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaylistDTO {
-    private Integer playlist_id;
+    private Integer playlistId;
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private String title;
     private Date created_at;
+    private Integer user_id;
+
 
 
 }

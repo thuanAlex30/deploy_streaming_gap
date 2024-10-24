@@ -30,9 +30,9 @@ public class UserManagementService {
 
     public String register(ReqRes registrationRequest) {
         try {
-           if(userRepo.existsByEmail(registrationRequest.getEmail())){
-               return "mail da su dung";
-           }
+            if(userRepo.existsByEmail(registrationRequest.getEmail())){
+                return "mail da su dung";
+            }
 
             User user = new User();
             user.setEmail(registrationRequest.getEmail());
@@ -199,6 +199,11 @@ public class UserManagementService {
         return reqRes;
 
     }
+    public Optional<Integer> getUserIdByUsername(String username) {
+        return userRepo.findByUsername(username)
+                .map(User::getUser_id);
+    }
+
     public Optional<User> getUsersByIdC(Integer id) {
         return userRepo.findById(id);
     }
@@ -206,6 +211,8 @@ public class UserManagementService {
         return userRepo.findById(id).map(User::getUser_id);
     }
 
-
+    public Optional<User> getUserByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
 
 }

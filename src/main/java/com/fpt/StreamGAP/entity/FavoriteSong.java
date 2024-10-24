@@ -2,7 +2,7 @@ package com.fpt.StreamGAP.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "Favorite_Songs")
@@ -10,7 +10,7 @@ import java.sql.Date;
 public class FavoriteSong {
 
     @EmbeddedId
-    private FavoriteSongId id;
+    private FavoriteSongId f_id;
 
     @ManyToOne
     @MapsId("userId")
@@ -19,8 +19,19 @@ public class FavoriteSong {
 
     @ManyToOne
     @MapsId("songId")
-    @JoinColumn(name = "song_id")
+    @JoinColumn(name = "song_id", referencedColumnName = "song_id", insertable = false, updatable = false)
     private Song song;
 
     private Date markedAt;
+    public FavoriteSong(int userId, int songId) {
+        this.f_id = new FavoriteSongId(userId, songId);
+        this.markedAt = new Date();
+    }
+    public FavoriteSong(FavoriteSongId favoriteSongId) {
+        this.f_id = favoriteSongId;
+        this.markedAt = new Date();
+    }
+
+    public FavoriteSong() {
+    }
 }

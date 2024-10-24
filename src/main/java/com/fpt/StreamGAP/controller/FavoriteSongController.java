@@ -4,12 +4,23 @@ import com.fpt.StreamGAP.dto.FavoriteSongDTO;
 import com.fpt.StreamGAP.dto.ReqRes;
 import com.fpt.StreamGAP.entity.FavoriteSong;
 import com.fpt.StreamGAP.entity.FavoriteSongId;
+import com.fpt.StreamGAP.entity.Song;
+import com.fpt.StreamGAP.entity.User;
+import com.fpt.StreamGAP.repository.SongRepository;
+import com.fpt.StreamGAP.repository.UserRepo;
 import com.fpt.StreamGAP.service.FavoriteSongService;
+import com.fpt.StreamGAP.service.UserManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -21,13 +32,13 @@ public class FavoriteSongController {
 
     @GetMapping
     public ReqRes getAllFavoriteSongs() {
-        List<FavoriteSong> favoriteSongs = favoriteSongService.getAllFavoriteSongs();
+        List<FavoriteSong> favoriteSongs = favoriteSongService.getAllFavoriteSongsForCurrentUser();
 
         List<FavoriteSongDTO> favoriteSongDTOs = favoriteSongs.stream()
                 .map(favoriteSong -> {
                     FavoriteSongDTO dto = new FavoriteSongDTO();
-                    dto.setUserId(favoriteSong.getId().getUserId());
-                    dto.setSongId(favoriteSong.getId().getSongId());
+                    dto.setUserId(favoriteSong.getF_id().getUserId());
+                    dto.setSongId(favoriteSong.getF_id().getSongId());
                     dto.setMarkedAt(favoriteSong.getMarkedAt());
                     return dto;
                 })
@@ -43,14 +54,14 @@ public class FavoriteSongController {
     @GetMapping("/{userId}/{songId}")
     public ResponseEntity<ReqRes> getFavoriteSongById(@PathVariable Integer userId, @PathVariable Integer songId) {
         FavoriteSongId favoriteSongId = new FavoriteSongId();
-        favoriteSongId.setUserId(userId); // Thiết lập userId
-        favoriteSongId.setSongId(songId); // Thiết lập songId
+        favoriteSongId.setUserId(userId);
+        favoriteSongId.setSongId(songId);
 
         return favoriteSongService.getFavoriteSongById(favoriteSongId)
                 .map(favoriteSong -> {
                     FavoriteSongDTO dto = new FavoriteSongDTO();
-                    dto.setUserId(favoriteSong.getId().getUserId());
-                    dto.setSongId(favoriteSong.getId().getSongId());
+                    dto.setUserId(favoriteSong.getF_id().getUserId());
+                    dto.setSongId(favoriteSong.getF_id().getSongId());
                     dto.setMarkedAt(favoriteSong.getMarkedAt());
 
                     ReqRes response = new ReqRes();
@@ -68,68 +79,31 @@ public class FavoriteSongController {
     }
 
     @PostMapping
-    public ReqRes createFavoriteSong(@RequestBody FavoriteSong favoriteSong) {
-        FavoriteSong savedFavoriteSong = favoriteSongService.saveFavoriteSong(favoriteSong);
+    public ResponseEntity<ReqRes> createFavoriteSong(@RequestBody FavoriteSongDTO favoriteSongDTO) {
+        FavoriteSong savedFavoriteSong = favoriteSongService.createFavori(favoriteSongDTO);
 
-        FavoriteSongDTO dto = new FavoriteSongDTO();
-        dto.setUserId(savedFavoriteSong.getId().getUserId());
-        dto.setSongId(savedFavoriteSong.getId().getSongId());
-        dto.setMarkedAt(savedFavoriteSong.getMarkedAt());
+        FavoriteSongDTO responseDTO = new FavoriteSongDTO();
+        responseDTO.setUserId(savedFavoriteSong.getUser().getUser_id());
+        responseDTO.setSongId(savedFavoriteSong.getSong().getSongId());
+        responseDTO.setMarkedAt(savedFavoriteSong.getMarkedAt());
 
         ReqRes response = new ReqRes();
         response.setStatusCode(201);
         response.setMessage("Favorite song created successfully");
-        response.setFavoriteSongList(List.of(dto));
-        return response;
+        response.setFavoriteSongList(List.of(responseDTO));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/{userId}/{songId}")
-    public ResponseEntity<ReqRes> updateFavoriteSong(@PathVariable Integer userId, @PathVariable Integer songId, @RequestBody FavoriteSong favoriteSong) {
-        FavoriteSongId favoriteSongId = new FavoriteSongId();
-        favoriteSongId.setUserId(userId); // Thiết lập userId
-        favoriteSongId.setSongId(songId); // Thiết lập songId
 
-        return favoriteSongService.getFavoriteSongById(favoriteSongId)
-                .map(existingFavoriteSong -> {
-                    favoriteSong.setId(favoriteSongId);
-                    FavoriteSong updatedFavoriteSong = favoriteSongService.saveFavoriteSong(favoriteSong);
 
-                    FavoriteSongDTO dto = new FavoriteSongDTO();
-                    dto.setUserId(updatedFavoriteSong.getId().getUserId());
-                    dto.setSongId(updatedFavoriteSong.getId().getSongId());
-                    dto.setMarkedAt(updatedFavoriteSong.getMarkedAt());
 
-                    ReqRes response = new ReqRes();
-                    response.setStatusCode(200);
-                    response.setMessage("Favorite song updated successfully");
-                    response.setFavoriteSongList(List.of(dto));
-                    return ResponseEntity.ok(response);
-                })
-                .orElseGet(() -> {
-                    ReqRes response = new ReqRes();
-                    response.setStatusCode(404);
-                    response.setMessage("Favorite song not found");
-                    return ResponseEntity.status(404).body(response);
-                });
-    }
+    @DeleteMapping("/delete/{userId}/{songId}")
+    public ResponseEntity<String> deleteFavoriteSong(
+            @PathVariable int userId,
+            @PathVariable int songId) {
 
-    @DeleteMapping("/{userId}/{songId}")
-    public ResponseEntity<ReqRes> deleteFavoriteSong(@PathVariable Integer userId, @PathVariable Integer songId) {
-        FavoriteSongId favoriteSongId = new FavoriteSongId();
-        favoriteSongId.setUserId(userId); // Thiết lập userId
-        favoriteSongId.setSongId(songId); // Thiết lập songId
-
-        if (favoriteSongService.getFavoriteSongById(favoriteSongId).isPresent()) {
-            favoriteSongService.deleteFavoriteSong(favoriteSongId);
-            ReqRes response = new ReqRes();
-            response.setStatusCode(204);
-            response.setMessage("Favorite song deleted successfully");
-            return ResponseEntity.noContent().build();
-        } else {
-            ReqRes response = new ReqRes();
-            response.setStatusCode(404);
-            response.setMessage("Favorite song not found");
-            return ResponseEntity.status(404).body(response);
-        }
+        favoriteSongService.deleteFavoriteSong(userId, songId);
+        return ResponseEntity.ok("Favorite song deleted successfully");
     }
 }

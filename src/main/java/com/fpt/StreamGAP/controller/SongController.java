@@ -122,17 +122,17 @@ public class SongController {
         response.setMessage("Song deleted successfully");
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/search")
-    public ResponseEntity<ReqRes> searchSongs(@RequestParam String keyword) {
-        List<SongTitleDTO> songTitles = songService.searchSongs(keyword);
-
-        ReqRes response = new ReqRes();
-        response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("Search successful");
-        response.setSongListtt(songTitles);
-
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("/search")
+//    public ResponseEntity<ReqRes> searchSongs(@RequestParam String keyword) {
+//        List<SongTitleDTO> songTitles = songService.searchSongs(keyword);
+//
+//        ReqRes response = new ReqRes();
+//        response.setStatusCode(HttpStatus.OK.value());
+//        response.setMessage("Search successful");
+//        response.setSongDtoList(songTitles);;
+//
+//        return ResponseEntity.ok(response);
+//    }
 
     private SongDetailDTO convertToSongDetailDTO(Song song) {
         SongDetailDTO dto = new SongDetailDTO();

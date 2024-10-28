@@ -1,26 +1,37 @@
 package com.fpt.StreamGAP.entity;
 
-import jakarta.persistence.*;
+import com.fpt.StreamGAP.Status.Status;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.util.Date;
-
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
+@ToString
+@Entity
+@Table(name = "messages") // Tên bảng trong cơ sở dữ liệu, có thể tùy chỉnh nếu cần
 public class Message {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id; // Khóa chính
 
-    private String content;
+    private String senderName;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_channel_id")
-    private ChatChannel chatChannel;
+    private String receiverName;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User sentBy;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date sentAt;
+    private String message;
+
+    private String media;
+
+    private Status status;
+
+    private String mediaType;
 }

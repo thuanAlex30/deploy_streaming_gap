@@ -96,6 +96,11 @@
 			<artifactId>netty-socketio</artifactId>
 			<version>1.7.17</version>
 		</dependency>
+		<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+</dependency>
+
 	</dependencies>
 
 	<build>
